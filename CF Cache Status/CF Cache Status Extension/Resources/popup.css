@@ -1,0 +1,205 @@
+/**
+ * CF Cache Status - Popup Styles
+ *
+ * iOS Settings-inspired design with grouped sections and rounded cards.
+ * Supports both light and dark mode via prefers-color-scheme.
+ */
+
+/* =============================================================================
+   Reset & Base
+   ============================================================================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  overflow: hidden;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  font-size: 13px;
+  min-width: 420px;
+  max-width: 500px;
+  max-height: 600px;
+  background: #f2f2f7;
+  color: #1c1c1e;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #1c1c1e;
+    color: #f5f5f7;
+  }
+}
+
+.container {
+  padding: 16px;
+  transform: translateZ(0);  /* Force GPU acceleration for smooth scrolling */
+  will-change: scroll-position;
+}
+
+/* =============================================================================
+   Status Card (Hero Section)
+   ============================================================================= */
+
+.status-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .status-card {
+    background: #2c2c2e;
+  }
+}
+
+#status-badge {
+  display: inline-block;
+  padding: 10px 28px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  background: #8e8e93;
+  color: white;
+}
+
+/* Status badge colors (Apple system colors) */
+#status-badge.hit { background: #34c759; }          /* Green */
+#status-badge.miss { background: #ff3b30; }         /* Red */
+#status-badge.error { background: #ff3b30; }        /* Red */
+#status-badge.expired,
+#status-badge.stale,
+#status-badge.revalidated,
+#status-badge.refresh { background: #ff9500; }      /* Orange */
+#status-badge.bypass,
+#status-badge.dynamic { background: #8e8e93; }      /* Gray */
+
+#status-label {
+  font-size: 13px;
+  color: #8e8e93;
+  margin-top: 4px;
+}
+
+/* =============================================================================
+   Sections (Grouped Cards)
+   ============================================================================= */
+
+.section {
+  margin-bottom: 16px;
+}
+
+.section-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: #6e6e73;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  padding-left: 16px;
+}
+
+.section-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+@media (prefers-color-scheme: dark) {
+  .section-card {
+    background: #2c2c2e;
+  }
+}
+
+/* =============================================================================
+   Header Rows
+   ============================================================================= */
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e5ea;
+  min-height: 44px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .row {
+    border-bottom-color: #3a3a3c;
+  }
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row-label {
+  font-size: 13px;
+  color: #1c1c1e;
+  flex-shrink: 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .row-label {
+    color: #f5f5f7;
+  }
+}
+
+.row-value {
+  font-size: 13px;
+  color: #8e8e93;
+  text-align: right;
+  word-break: break-all;
+  margin-left: 16px;
+  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+}
+
+/* =============================================================================
+   Empty State
+   ============================================================================= */
+
+#no-data {
+  background: white;
+  border-radius: 12px;
+  padding: 32px 20px;
+  text-align: center;
+  color: #8e8e93;
+}
+
+@media (prefers-color-scheme: dark) {
+  #no-data {
+    background: #2c2c2e;
+  }
+}
+
+/* =============================================================================
+   URL Footer
+   ============================================================================= */
+
+#url-container {
+  padding: 8px 16px 0 16px;
+  font-size: 11px;
+  color: #8e8e93;
+  word-break: break-all;
+}
+
+/* =============================================================================
+   Utilities
+   ============================================================================= */
+
+.hidden {
+  display: none !important;
+}

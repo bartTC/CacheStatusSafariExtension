@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Cache Status",
+  "version": "1.0",
+  "description": "Shows CDN cache status (HIT/MISS) for the current page. Supports Cloudflare, CloudFront, Fastly, Akamai, and more.",
+  "icons": {
+    "16": "images/icon.svg",
+    "32": "images/icon.svg",
+    "48": "images/icon.svg",
+    "128": "images/icon.svg"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon.svg",
+      "32": "images/icon.svg",
+      "48": "images/icon.svg",
+      "128": "images/icon.svg"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "webRequest",
+    "webNavigation",
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}

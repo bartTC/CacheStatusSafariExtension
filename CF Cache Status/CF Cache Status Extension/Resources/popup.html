@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cache Status</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="status-card">
+      <div id="status-badge">--</div>
+      <div id="status-label">Loading...</div>
+    </div>
+
+    <div id="no-data" class="hidden">
+      <p>No CDN cache data available for this page.</p>
+    </div>
+
+    <div id="cache-section" class="section hidden">
+      <div class="section-header">Cache</div>
+      <div class="section-card" id="cache-rows"></div>
+    </div>
+
+    <div id="response-section" class="section hidden">
+      <div class="section-header">Response</div>
+      <div class="section-card" id="response-rows"></div>
+    </div>
+
+    <div id="url-container" class="hidden">
+      <span id="page-url"></span>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

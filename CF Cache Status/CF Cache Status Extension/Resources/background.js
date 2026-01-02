@@ -255,10 +255,29 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
   }
 });
 
-// Handle messages from popup requesting tab data
+// Handle messages from popup and content scripts
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'getTabData') {
     sendResponse(tabData.get(message.tabId) || null);
   }
+
+  // Handle performance data from content script
+  if (message.type === 'performanceData' && sender.tab) {
+    const existing = tabData.get(sender.tab.id);
+    if (existing) {
+      existing.performance = message.metrics;
+    } else {
+      // Store performance data even if no cache headers yet
+      tabData.set(sender.tab.id, {
+        url: sender.tab.url,
+        headers: {},
+        status: null,
+        cdn: null,
+        performance: message.metrics,
+        timestamp: Date.now()
+      });
+    }
+  }
+
   return true;
 });

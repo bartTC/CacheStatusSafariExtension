@@ -37,63 +37,15 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
           security list-keychain -d user -s $KEYCHAIN_PATH
 
-      - name: Build and Archive
-        env:
-          TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-        run: |
-          xcodebuild archive \
-            -project "CF Cache Status/CF Cache Status.xcodeproj" \
-            -scheme "CF Cache Status" \
-            -archivePath $RUNNER_TEMP/CacheStatus.xcarchive \
-            DEVELOPMENT_TEAM="$TEAM_ID" \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="Developer ID Application"
-
-      - name: Export App
-        run: |
-          # Create export options plist
-          cat > $RUNNER_TEMP/ExportOptions.plist << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>method</key>
-              <string>developer-id</string>
-              <key>teamID</key>
-              <string>${{ secrets.APPLE_TEAM_ID }}</string>
-          </dict>
-          </plist>
-          EOF
-
-          xcodebuild -exportArchive \
-            -archivePath $RUNNER_TEMP/CacheStatus.xcarchive \
-            -exportPath $RUNNER_TEMP/export \
-            -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist
-
-      - name: Notarize App
+      - name: Build, Notarize, and Package
+        timeout-minutes: 30
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
         run: |
-          # Create zip for notarization
-          ditto -c -k --keepParent "$RUNNER_TEMP/export/CF Cache Status.app" $RUNNER_TEMP/CacheStatus.zip
-
-          # Submit for notarization
-          xcrun notarytool submit $RUNNER_TEMP/CacheStatus.zip \
-            --apple-id "$APPLE_ID" \
-            --team-id "$APPLE_TEAM_ID" \
-            --password "$APPLE_APP_PASSWORD" \
-            --wait
-
-          # Staple the ticket
-          xcrun stapler staple "$RUNNER_TEMP/export/CF Cache Status.app"
-
-      - name: Create Release Zip
-        run: |
-          cd $RUNNER_TEMP/export
-          ditto -c -k --keepParent "CF Cache Status.app" CacheStatus.zip
-          mv CacheStatus.zip $GITHUB_WORKSPACE/
+          ./scripts/release.sh all
+          cp build/CacheStatus.zip $GITHUB_WORKSPACE/
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4

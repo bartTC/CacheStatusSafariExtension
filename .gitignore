@@ -12,3 +12,6 @@ IDEWorkspaceChecks.plist
 
 # Claude Code
 .claude/
+
+# Local environment
+.env

@@ -186,6 +186,18 @@ const CDN_NAMES = {
   'cdn': 'CDN'
 };
 
+/** Performance metrics to display (order matters) */
+const PERFORMANCE_METRICS = [
+  { key: 'ttfb', label: 'TTFB', description: 'Time to First Byte' },
+  { key: 'dns', label: 'DNS Lookup' },
+  { key: 'tcp', label: 'TCP Connect' },
+  { key: 'tls', label: 'TLS Handshake' },
+  { key: 'download', label: 'Download' },
+  { key: 'domInteractive', label: 'DOM Interactive' },
+  { key: 'pageLoad', label: 'Page Load' },
+  { key: 'transferSize', label: 'Transfer Size', format: 'bytes' }
+];
+
 // =============================================================================
 // Initialization
 // =============================================================================
@@ -211,8 +223,9 @@ async function init() {
       return;
     }
 
-    updateStatus(data.status, data.cdn);
+    updateStatus(data.status, data.cdn, data.performance);
     populateHeaders(data.headers, data.cdn);
+    populatePerformance(data.performance);
 
     if (data.url) {
       document.getElementById('page-url').textContent = data.url;
@@ -244,8 +257,9 @@ function showNoData() {
  * Updates the status badge and label based on cache status.
  * @param {string|null} status - Cache status (HIT, MISS, etc.)
  * @param {string|null} cdn - CDN identifier
+ * @param {Object|null} performance - Performance metrics
  */
-function updateStatus(status, cdn) {
+function updateStatus(status, cdn, performance) {
   const badge = document.getElementById('status-badge');
   const label = document.getElementById('status-label');
   const cdnName = CDN_NAMES[cdn] || 'CDN';
@@ -273,7 +287,23 @@ function updateStatus(status, cdn) {
     'ERROR': 'Error retrieving from origin'
   };
 
-  label.textContent = descriptions[status.toUpperCase()] || `${cdnName} cache status`;
+  let text = descriptions[status.toUpperCase()] || `${cdnName} cache status`;
+
+  // Append performance metrics if available
+  if (performance) {
+    const parts = [];
+    if (performance.ttfb > 0) {
+      parts.push(formatPerformanceValue(performance.ttfb));
+    }
+    if (performance.transferSize > 0) {
+      parts.push(formatPerformanceValue(performance.transferSize, 'bytes'));
+    }
+    if (parts.length > 0) {
+      text += ` (${parts.join(', ')})`;
+    }
+  }
+
+  label.textContent = text;
 }
 
 /**
@@ -314,6 +344,73 @@ function populateHeaders(headers, cdn) {
 
   if (cacheCount > 0) cacheSection.classList.remove('hidden');
   if (responseCount > 0) responseSection.classList.remove('hidden');
+
+  // Show CloudFront-specific info about Origin Shield behavior
+  if (cdn === 'cloudfront') {
+    document.getElementById('info-section').classList.remove('hidden');
+  }
+}
+
+/**
+ * Populates the performance section with timing metrics.
+ * @param {Object|null} performance - Performance metrics from Navigation Timing API
+ */
+function populatePerformance(performance) {
+  const section = document.getElementById('performance-section');
+  const rows = document.getElementById('performance-rows');
+
+  if (!performance) {
+    section.classList.add('hidden');
+    return;
+  }
+
+  rows.innerHTML = '';
+  let count = 0;
+
+  for (const metric of PERFORMANCE_METRICS) {
+    const value = performance[metric.key];
+    if (value === null || value === undefined || value < 0) continue;
+    // Skip zero values for optional metrics like TLS
+    if (value === 0 && (metric.key === 'tls' || metric.key === 'dns')) continue;
+
+    const row = document.createElement('div');
+    row.className = 'row';
+
+    const label = document.createElement('span');
+    label.className = 'row-label';
+    label.textContent = metric.label;
+
+    const val = document.createElement('span');
+    val.className = 'row-value';
+    val.textContent = formatPerformanceValue(value, metric.format);
+
+    row.appendChild(label);
+    row.appendChild(val);
+    rows.appendChild(row);
+    count++;
+  }
+
+  if (count > 0) {
+    section.classList.remove('hidden');
+  }
+}
+
+/**
+ * Formats performance values for display.
+ * @param {number} value - Raw value
+ * @param {string} format - Format type ('bytes' or default ms)
+ * @returns {string} Formatted value
+ */
+function formatPerformanceValue(value, format) {
+  if (format === 'bytes') {
+    if (value < 1024) return `${value} B`;
+    if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)} KB`;
+    return `${(value / (1024 * 1024)).toFixed(2)} MB`;
+  }
+
+  // Default: milliseconds
+  if (value < 1000) return `${value} ms`;
+  return `${(value / 1000).toFixed(2)} s`;
 }
 
 /**

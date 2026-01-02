@@ -27,8 +27,20 @@
       <div class="section-card" id="response-rows"></div>
     </div>
 
+    <div id="performance-section" class="section hidden">
+      <div class="section-header">Performance</div>
+      <div class="section-card" id="performance-rows"></div>
+    </div>
+
     <div id="url-container" class="hidden">
       <span id="page-url"></span>
+    </div>
+
+    <div id="info-section" class="section hidden">
+      <div class="section-header">Note</div>
+      <div class="info-card">
+        <p class="info-note">A "MISS" at the edge doesn't always mean the request reached your origin. CloudFront may serve from <a href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/origin-shield.html" target="_blank">Origin Shield</a> (intermediate cache) but still report MISS from the edge's perspective.</p>
+      </div>
     </div>
   </div>
   <script src="popup.js"></script>

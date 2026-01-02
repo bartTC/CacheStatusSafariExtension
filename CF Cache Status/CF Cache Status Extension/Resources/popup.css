@@ -20,7 +20,8 @@ html {
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Helvetica Neue", sans-serif;
   font-size: 13px;
   min-width: 420px;
   max-width: 500px;
@@ -42,7 +43,7 @@ body {
 
 .container {
   padding: 16px;
-  transform: translateZ(0);  /* Force GPU acceleration for smooth scrolling */
+  transform: translateZ(0); /* Force GPU acceleration for smooth scrolling */
   will-change: scroll-position;
 }
 
@@ -77,15 +78,25 @@ body {
 }
 
 /* Status badge colors (Apple system colors) */
-#status-badge.hit { background: #34c759; }          /* Green */
-#status-badge.miss { background: #ff3b30; }         /* Red */
-#status-badge.error { background: #ff3b30; }        /* Red */
+#status-badge.hit {
+  background: #34c759;
+} /* Green */
+#status-badge.miss {
+  background: #ff3b30;
+} /* Red */
+#status-badge.error {
+  background: #ff3b30;
+} /* Red */
 #status-badge.expired,
 #status-badge.stale,
 #status-badge.revalidated,
-#status-badge.refresh { background: #ff9500; }      /* Orange */
+#status-badge.refresh {
+  background: #ff9500;
+} /* Orange */
 #status-badge.bypass,
-#status-badge.dynamic { background: #8e8e93; }      /* Gray */
+#status-badge.dynamic {
+  background: #8e8e93;
+} /* Gray */
 
 #status-label {
   font-size: 13px;
@@ -130,7 +141,7 @@ body {
 .row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
   padding: 12px 16px;
   border-bottom: 1px solid #e5e5ea;
   min-height: 44px;
@@ -164,7 +175,7 @@ body {
   text-align: right;
   word-break: break-all;
   margin-left: 16px;
-  font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+  font-family: "SF Mono", Monaco, "Courier New", monospace;
 }
 
 /* =============================================================================
@@ -190,10 +201,41 @@ body {
    ============================================================================= */
 
 #url-container {
-  padding: 8px 16px 0 16px;
+  padding: 0 16px 24px 16px;
   font-size: 11px;
   color: #8e8e93;
   word-break: break-all;
+}
+
+/* =============================================================================
+   Info Card
+   ============================================================================= */
+
+.info-card {
+  background: white;
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .info-card {
+    background: #2c2c2e;
+  }
+}
+
+.info-note {
+  font-size: 12px;
+  color: #8e8e93;
+  line-height: 1.5;
+}
+
+.info-note a {
+  color: #007aff;
+  text-decoration: none;
+}
+
+.info-note a:hover {
+  text-decoration: underline;
 }
 
 /* =============================================================================

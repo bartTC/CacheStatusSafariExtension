@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: |
+          xcodebuild build \
+            -project "CF Cache Status/CF Cache Status.xcodeproj" \
+            -scheme "CF Cache Status" \
+            -destination "platform=macOS" \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO
+
+      - name: Validate manifest.json
+        run: |
+          python3 -c "
+          import json
+          import sys
+
+          with open('CF Cache Status/CF Cache Status Extension/Resources/manifest.json') as f:
+              manifest = json.load(f)
+
+          required = ['manifest_version', 'name', 'version', 'permissions']
+          missing = [k for k in required if k not in manifest]
+
+          if missing:
+              print(f'Missing required fields: {missing}')
+              sys.exit(1)
+
+          print('manifest.json is valid')
+          print(f'  Name: {manifest[\"name\"]}')
+          print(f'  Version: {manifest[\"version\"]}')
+          "
+
+      - name: Lint JavaScript (syntax check)
+        run: |
+          for file in "CF Cache Status/CF Cache Status Extension/Resources/"*.js \
+                      "CF Cache Status/CF Cache Status Extension/"*.js; do
+            if [ -f "$file" ]; then
+              echo "Checking: $file"
+              node --check "$file"
+            fi
+          done

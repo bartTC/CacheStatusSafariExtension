@@ -173,9 +173,8 @@ body {
   font-size: 13px;
   color: #8e8e93;
   text-align: right;
-  word-break: break-all;
+  word-break: break-word;
   margin-left: 16px;
-  font-family: "SF Mono", Monaco, "Courier New", monospace;
 }
 
 /* =============================================================================
@@ -236,6 +235,25 @@ body {
 
 .info-note a:hover {
   text-decoration: underline;
+}
+
+.info-diagram {
+  font-family: "SF Mono", Menlo, Monaco, monospace;
+  font-size: 11px;
+  color: #6e6e73;
+  background: #f2f2f7;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin: 8px 0;
+  text-align: left;
+  line-height: 1.4;
+}
+
+@media (prefers-color-scheme: dark) {
+  .info-diagram {
+    background: #3a3a3c;
+    color: #a1a1a6;
+  }
 }
 
 /* =============================================================================

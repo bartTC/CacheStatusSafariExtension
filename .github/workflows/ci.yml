@@ -53,3 +53,11 @@ jobs:
               node --check "$file"
             fi
           done
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Run CDN detection tests
+        run: node tests/cdn-detection.test.js

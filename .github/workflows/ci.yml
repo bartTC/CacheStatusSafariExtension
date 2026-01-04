@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,6 +21,41 @@ jobs:
             -destination "platform=macOS" \
             CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Lint JavaScript
+        run: |
+          for file in "CF Cache Status/CF Cache Status Extension/Resources/"*.js \
+                      "CF Cache Status/CF Cache Status Extension/"*.js; do
+            if [ -f "$file" ]; then
+              echo "Checking: $file"
+              node --check "$file"
+            fi
+          done
+
+      - name: Run CDN detection tests
+        run: node tests/cdn-detection.test.js
+
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
 
       - name: Validate manifest.json
         run: |
@@ -43,21 +77,3 @@ jobs:
           print(f'  Name: {manifest[\"name\"]}')
           print(f'  Version: {manifest[\"version\"]}')
           "
-
-      - name: Lint JavaScript (syntax check)
-        run: |
-          for file in "CF Cache Status/CF Cache Status Extension/Resources/"*.js \
-                      "CF Cache Status/CF Cache Status Extension/"*.js; do
-            if [ -f "$file" ]; then
-              echo "Checking: $file"
-              node --check "$file"
-            fi
-          done
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-
-      - name: Run CDN detection tests
-        run: node tests/cdn-detection.test.js

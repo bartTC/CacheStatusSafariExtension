@@ -2,16 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [v0.0.4] - 2026-01-04
 
 ### Added
 - Justfile for build and release commands (`just build-dev`, `just release`, etc.)
 - CDN detection test suite (27 test cases)
 - Akamai detection via `server` header (supports AkamaiGHost, AkamaiNetStorage)
+- Versioned build directories (`build/<version>/`) to avoid confusion
 
 ### Changed
 - Refactored CDN detection into shared `constants.js` with declarative rules
 - CDN info notes now only appear when relevant (Fastly note requires x-cache header, CloudFront note only on MISS)
+- Release scripts moved to `scripts/` directory for better maintainability
 
 ### Fixed
 - URL display after redirects (now shows final URL instead of intermediate redirect URLs)

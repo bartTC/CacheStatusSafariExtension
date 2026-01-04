@@ -157,10 +157,10 @@ function updateUI(data) {
     document.getElementById('url-container').classList.remove('hidden');
   }
 
-  // Show CDN-specific info notes
-  if (data?.cdn === 'cloudfront') {
+  // Show CDN-specific info notes (only when relevant headers are present)
+  if (data?.cdn === 'cloudfront' && data.status === 'MISS') {
     document.getElementById('cloudfront-info').classList.remove('hidden');
-  } else if (data?.cdn === 'fastly') {
+  } else if (data?.cdn === 'fastly' && data.headers?.['x-cache']) {
     document.getElementById('fastly-info').classList.remove('hidden');
   }
 }

@@ -5,89 +5,9 @@
  * Shows cache status, edge location, and relevant HTTP headers.
  */
 
-// =============================================================================
-// Configuration
-// =============================================================================
-
-const EDGE_LOCATIONS = {
-  // North America
-  'IAD': 'Ashburn, VA', 'CMH': 'Columbus, OH', 'ORD': 'Chicago, IL',
-  'DFW': 'Dallas, TX', 'DEN': 'Denver, CO', 'HIO': 'Hillsboro, OR',
-  'IAH': 'Houston, TX', 'JAX': 'Jacksonville, FL', 'LAX': 'Los Angeles, CA',
-  'MIA': 'Miami, FL', 'MSP': 'Minneapolis, MN', 'YUL': 'Montreal, QC',
-  'JFK': 'New York, NY', 'EWR': 'Newark, NJ', 'PHX': 'Phoenix, AZ',
-  'SFO': 'San Francisco, CA', 'SEA': 'Seattle, WA', 'YTO': 'Toronto, ON',
-  'ATL': 'Atlanta, GA', 'BOS': 'Boston, MA', 'SLC': 'Salt Lake City, UT',
-  'PDX': 'Portland, OR', 'PHL': 'Philadelphia, PA', 'CLT': 'Charlotte, NC',
-  'QRO': 'Queretaro, MX',
-  // Europe
-  'AMS': 'Amsterdam, NL', 'TXL': 'Berlin, DE', 'BRU': 'Brussels, BE',
-  'OTP': 'Bucharest, RO', 'BUD': 'Budapest, HU', 'CPH': 'Copenhagen, DK',
-  'DUB': 'Dublin, IE', 'DUS': 'Dusseldorf, DE', 'FRA': 'Frankfurt, DE',
-  'HAM': 'Hamburg, DE', 'HEL': 'Helsinki, FI', 'LIS': 'Lisbon, PT',
-  'LHR': 'London, UK', 'MAD': 'Madrid, ES', 'MAN': 'Manchester, UK',
-  'MRS': 'Marseille, FR', 'MXP': 'Milan, IT', 'MUC': 'Munich, DE',
-  'OSL': 'Oslo, NO', 'PMO': 'Palermo, IT', 'CDG': 'Paris, FR',
-  'PRG': 'Prague, CZ', 'FCO': 'Rome, IT', 'SOF': 'Sofia, BG',
-  'ARN': 'Stockholm, SE', 'VIE': 'Vienna, AT', 'WAW': 'Warsaw, PL',
-  'ZAG': 'Zagreb, HR', 'ZRH': 'Zurich, CH',
-  // Asia Pacific
-  'BLR': 'Bangalore, IN', 'BKK': 'Bangkok, TH', 'MAA': 'Chennai, IN',
-  'HKG': 'Hong Kong', 'HYD': 'Hyderabad, IN', 'CGK': 'Jakarta, ID',
-  'CCU': 'Kolkata, IN', 'KUL': 'Kuala Lumpur, MY', 'MNL': 'Manila, PH',
-  'BOM': 'Mumbai, IN', 'DEL': 'New Delhi, IN', 'KIX': 'Osaka, JP',
-  'ICN': 'Seoul, KR', 'SIN': 'Singapore', 'TPE': 'Taipei, TW',
-  'NRT': 'Tokyo, JP', 'HND': 'Tokyo, JP',
-  // Australia & NZ
-  'AKL': 'Auckland, NZ', 'MEL': 'Melbourne, AU', 'PER': 'Perth, AU',
-  'SYD': 'Sydney, AU', 'BNE': 'Brisbane, AU',
-  // South America
-  'EZE': 'Buenos Aires, AR', 'BOG': 'Bogota, CO', 'FOR': 'Fortaleza, BR',
-  'LIM': 'Lima, PE', 'GRU': 'Sao Paulo, BR', 'SCL': 'Santiago, CL',
-  'GIG': 'Rio de Janeiro, BR',
-  // Middle East & Africa
-  'BAH': 'Bahrain', 'CPT': 'Cape Town, ZA', 'DXB': 'Dubai, AE',
-  'FJR': 'Fujairah, AE', 'JNB': 'Johannesburg, ZA', 'NBO': 'Nairobi, KE',
-  'TLV': 'Tel Aviv, IL'
-};
-
-const CACHE_HEADERS = [
-  'x-cache', 'cf-cache-status', 'cdn-cache',
-  'x-amz-cf-pop', 'cf-pop', 'x-edge-location', 'x-served-by',
-  'age', 'expires', 'cache-control', 'etag', 'last-modified', 'vary', 'pragma',
-  'cf-ray', 'x-amz-cf-id', 'x-akamai-request-id', 'cdn-requestid', 'cdn-pullzone',
-  'x-cache-hits', 'x-timer', 'x-varnish'
-];
-
-const RESPONSE_HEADERS = ['server', 'content-type', 'via'];
-
-const CDN_NAMES = {
-  'cloudflare': 'Cloudflare', 'cloudfront': 'CloudFront', 'fastly': 'Fastly',
-  'akamai': 'Akamai', 'bunny': 'Bunny CDN', 'varnish': 'Varnish', 'cdn': 'CDN'
-};
-
-const STATUS_DESCRIPTIONS = {
-  'HIT': 'Served from {cdn} cache',
-  'MISS': 'Fetched from origin server',
-  'EXPIRED': 'Cache expired, fetched from origin',
-  'STALE': 'Serving stale content',
-  'REVALIDATED': 'Cache revalidated with origin',
-  'BYPASS': 'Cache bypassed',
-  'DYNAMIC': 'Dynamic content, not cached',
-  'REFRESH': 'Cache refreshed from origin',
-  'ERROR': 'Error retrieving from origin'
-};
-
-const PERFORMANCE_METRICS = [
-  { key: 'ttfb', label: 'TTFB' },
-  { key: 'dns', label: 'DNS Lookup', optional: true },
-  { key: 'tcp', label: 'TCP Connect' },
-  { key: 'tls', label: 'TLS Handshake', optional: true },
-  { key: 'download', label: 'Download' },
-  { key: 'domInteractive', label: 'DOM Interactive' },
-  { key: 'pageLoad', label: 'Page Load' },
-  { key: 'transferSize', label: 'Transfer Size', format: 'bytes' }
-];
+// Import shared constants (loaded via popup.html)
+// Uses: EDGE_LOCATIONS, CACHE_HEADERS, RESPONSE_HEADERS, STATUS_DESCRIPTIONS,
+//       PERFORMANCE_METRICS, getCDNName
 
 // =============================================================================
 // Initialization
@@ -99,7 +19,6 @@ async function init() {
     if (!tabs?.length) return;
 
     const data = await browser.runtime.sendMessage({ type: 'getTabData', tabId: tabs[0].id });
-
     updateUI(data);
   } catch (error) {
     console.error('Error loading data:', error);
@@ -125,7 +44,7 @@ function updateUI(data) {
   if (hasHeaders && data.status) {
     badgeText = data.status;
     badgeClass = data.status.toLowerCase();
-    const cdnName = CDN_NAMES[data.cdn] || 'CDN';
+    const cdnName = getCDNName(data.cdn);
     labelText = (STATUS_DESCRIPTIONS[data.status.toUpperCase()] || `${cdnName} cache status`)
       .replace('{cdn}', cdnName);
   } else if (hasHeaders) {

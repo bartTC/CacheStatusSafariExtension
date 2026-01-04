@@ -18,6 +18,10 @@ zip_path := build_dir / "CacheStatus.zip"
 default:
     @just --list
 
+# Run CDN detection tests
+test:
+    node tests/cdn-detection.test.js
+
 # =============================================================================
 # Development
 # =============================================================================

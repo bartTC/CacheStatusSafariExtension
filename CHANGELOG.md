@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+- Container app now uses toolbar cloud SVG instead of SF Symbol
+
 ## [v0.0.5] - 2026-01-04
 
 ### Fixed

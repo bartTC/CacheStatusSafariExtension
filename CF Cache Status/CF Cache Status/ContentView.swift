@@ -24,9 +24,10 @@ struct ContentView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Image(systemName: "cloud")
-                .font(.system(size: 72, weight: .thin))
-                .foregroundStyle(.secondary)
+            Image("ToolbarIcon")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 72, height: 72)
 
             Text(statusText)
                 .multilineTextAlignment(.center)

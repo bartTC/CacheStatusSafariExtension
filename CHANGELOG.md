@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.0.3] - 2026-01-04
+
+### Fixed
+- Safari extension preferences now displays the colorful app icon instead of the toolbar icon
+
+### Changed
+- Updated Xcode project configuration (macOS 11.0 deployment target, dead code stripping)
+
 ## [v0.0.2] - 2026-01-03
 
 ### Added

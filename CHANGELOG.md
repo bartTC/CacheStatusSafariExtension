@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - Headers now displayed in Title-Case (e.g., Cache-Control instead of cache-control)
 - New app icon
 - Simplified and cleaned up popup.js code
+- Replaced WebView-based container app with native SwiftUI (~290 lines → 91 lines)
 
 ### Fixed
 - Toolbar icon appearing blue instead of gray (Safari grayscale tinting workaround)

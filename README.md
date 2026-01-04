@@ -77,23 +77,118 @@ During development, enable unsigned extensions:
 
 > **Note:** This setting resets each time Safari is quit.
 
+### Testing
+
+Run the CDN detection test suite:
+
+```bash
+just test
+```
+
+### Build Commands
+
+The project uses [Just](https://github.com/casey/just) for build automation:
+
+```bash
+just              # List all commands
+just build-dev    # Build for development (unsigned)
+just build-release # Build release (unsigned, for testing)
+just clean        # Clean build artifacts
+just xcode        # Open project in Xcode
+```
+
+## Release Process
+
+Creating a signed and notarized release requires Apple Developer credentials.
+
+### Prerequisites
+
+1. **Apple Developer Account** with a Developer ID certificate
+
+2. **Create `.env`** in the project root:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+   Then edit `.env` with your credentials:
+
+   | Variable             | Description                                                                 |
+   | -------------------- | --------------------------------------------------------------------------- |
+   | `APPLE_ID`           | Your Apple ID email                                                         |
+   | `APPLE_TEAM_ID`      | 10-character Team ID from [developer.apple.com/account](https://developer.apple.com/account) → Membership |
+   | `APPLE_APP_PASSWORD` | App-specific password from [appleid.apple.com](https://appleid.apple.com/account/manage) → Sign-In and Security → App-Specific Passwords |
+
+3. **Configure Xcode signing** with your Developer ID certificate
+
+### Release Commands
+
+**Full automated release** (archive → submit → wait → staple):
+
+```bash
+just release v0.0.5
+```
+
+**Step-by-step release** (useful when notarization takes time):
+
+```bash
+# 1. Build and sign
+just archive v0.0.5
+
+# 2. Submit for notarization
+just submit
+
+# 3. Check status (optional)
+just status
+
+# 4. Wait for completion (can take minutes to hours)
+just wait
+
+# 5. Staple ticket and create final zip
+just staple
+```
+
+**Other commands:**
+
+```bash
+just history      # Show notarization history
+just log <id>     # Get notarization log for a submission
+just builds       # List available builds
+```
+
+### Build Output
+
+Builds are organized by version in `build/<version>/`:
+
+```
+build/
+├── v0.0.4/
+│   ├── archive/CF Cache Status.xcarchive
+│   ├── export/CF Cache Status.app
+│   ├── CacheStatus-v0.0.4.zip          # Final notarized release
+│   └── .submission_id                   # Notarization tracking
+└── .current_version                     # Tracks active build
+```
+
 ## Project Structure
 
 ```
 CF Cache Status/
-├── CF Cache Status/                    # macOS container app
-│   ├── AppDelegate.swift
-│   ├── ViewController.swift
+├── CF Cache Status/                    # macOS container app (SwiftUI)
+│   ├── CacheStatusApp.swift
+│   ├── ContentView.swift
 │   └── Assets.xcassets/
 └── CF Cache Status Extension/          # Safari Web Extension
+    ├── content.js                      # Performance metrics collection
     └── Resources/
         ├── manifest.json               # Extension configuration
+        ├── constants.js                # Shared CDN detection rules
         ├── background.js               # Header capture & badge updates
-        ├── popup.html                  # Popup structure
-        ├── popup.js                    # Popup logic & edge location mapping
-        ├── popup.css                   # iOS Settings-style design
+        ├── popup.html/js/css           # Popup UI
         └── images/
-            └── icon.svg                # Toolbar icon
+scripts/                                # Release automation
+tests/                                  # CDN detection tests
+Justfile                                # Build commands
 ```
 
 ## Permissions

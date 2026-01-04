@@ -2,7 +2,7 @@
 
 A Safari extension that displays CDN cache status (HIT/MISS) for the current page with detailed header information.
 
-![Screenshot](screenshot.png)
+![Screenshot](screenshot.jpg)
 
 ![Safari Extension](https://img.shields.io/badge/Safari-Extension-blue)
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-green)
@@ -18,30 +18,30 @@ A Safari extension that displays CDN cache status (HIT/MISS) for the current pag
 
 ## Supported CDNs
 
-| CDN | Detection Headers | Status Header |
-|-----|------------------|---------------|
-| **Cloudflare** | `cf-cache-status`, `cf-ray` | `cf-cache-status` |
-| **CloudFront** | `x-amz-cf-id`, `x-amz-cf-pop` | `x-cache` |
-| **Fastly** | `x-served-by`, `x-timer` | `x-cache` |
-| **Akamai** | `x-akamai-request-id` | `x-cache` |
-| **Bunny CDN** | `cdn-cache`, `cdn-pullzone` | `cdn-cache` |
-| **Varnish** | `x-varnish` | `x-cache` |
-| **Generic** | `x-cache` | `x-cache` |
+| CDN            | Detection Headers             | Status Header     |
+| -------------- | ----------------------------- | ----------------- |
+| **Cloudflare** | `cf-cache-status`, `cf-ray`   | `cf-cache-status` |
+| **CloudFront** | `x-amz-cf-id`, `x-amz-cf-pop` | `x-cache`         |
+| **Fastly**     | `x-served-by`, `x-timer`      | `x-cache`         |
+| **Akamai**     | `x-akamai-request-id`         | `x-cache`         |
+| **Bunny CDN**  | `cdn-cache`, `cdn-pullzone`   | `cdn-cache`       |
+| **Varnish**    | `x-varnish`                   | `x-cache`         |
+| **Generic**    | `x-cache`                     | `x-cache`         |
 
 Most CDNs use `x-cache: HIT from...` or `x-cache: MISS from...`, so the generic detection works for many unlisted CDNs as well.
 
 ## Cache Status Values
 
-| Status | Badge | Color | Meaning |
-|--------|-------|-------|---------|
-| HIT | `HIT` | 🟢 Green | Served from CDN cache |
-| MISS | `MISS` | 🔴 Red | Fetched from origin server |
-| EXPIRED | `EXP` | 🟠 Orange | Cache expired, refetched from origin |
-| STALE | `STL` | 🟠 Orange | Serving stale content |
-| REVALIDATED | `REV` | 🟠 Orange | Cache revalidated with origin |
-| REFRESH | `REF` | 🟠 Orange | Cache refreshed from origin |
-| BYPASS | `BYP` | ⚫ Gray | Cache bypassed |
-| DYNAMIC | `DYN` | ⚫ Gray | Dynamic content, not cached |
+| Status      | Badge  | Color     | Meaning                              |
+| ----------- | ------ | --------- | ------------------------------------ |
+| HIT         | `HIT`  | 🟢 Green  | Served from CDN cache                |
+| MISS        | `MISS` | 🔴 Red    | Fetched from origin server           |
+| EXPIRED     | `EXP`  | 🟠 Orange | Cache expired, refetched from origin |
+| STALE       | `STL`  | 🟠 Orange | Serving stale content                |
+| REVALIDATED | `REV`  | 🟠 Orange | Cache revalidated with origin        |
+| REFRESH     | `REF`  | 🟠 Orange | Cache refreshed from origin          |
+| BYPASS      | `BYP`  | ⚫ Gray   | Cache bypassed                       |
+| DYNAMIC     | `DYN`  | ⚫ Gray   | Dynamic content, not cached          |
 
 ## Build & Install
 
@@ -53,6 +53,7 @@ Most CDNs use `x-cache: HIT from...` or `x-cache: MISS from...`, so the generic 
 ### Steps
 
 1. Open the project in Xcode:
+
    ```bash
    open "CF Cache Status/CF Cache Status.xcodeproj"
    ```
@@ -97,12 +98,12 @@ CF Cache Status/
 
 ## Permissions
 
-| Permission | Purpose |
-|------------|---------|
-| `webRequest` | Read HTTP response headers |
-| `webNavigation` | Detect page navigations |
-| `activeTab` | Access current tab information |
-| `<all_urls>` | Monitor requests to all websites |
+| Permission      | Purpose                          |
+| --------------- | -------------------------------- |
+| `webRequest`    | Read HTTP response headers       |
+| `webNavigation` | Detect page navigations          |
+| `activeTab`     | Access current tab information   |
+| `<all_urls>`    | Monitor requests to all websites |
 
 ## How It Works
 

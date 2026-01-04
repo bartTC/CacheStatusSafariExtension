@@ -72,6 +72,10 @@ function detectCDN(headers) {
   if (headers['cdn-cache'] || headers['cdn-pullzone']) return 'bunny';
   if (headers['x-varnish']) return 'varnish';
 
+  // Check server header for CDN hints
+  const server = (headers['server'] || '').toLowerCase();
+  if (server.includes('akamai')) return 'akamai';
+
   // Check x-cache with via header for additional hints
   if (headers['x-cache']) {
     const via = (headers['via'] || '').toLowerCase();

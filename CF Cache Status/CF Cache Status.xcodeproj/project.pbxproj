@@ -8,13 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		5B0588CA2F08CB540004883F /* content.js in Resources */ = {isa = PBXBuildFile; fileRef = 5B0588C92F08CB540004883F /* content.js */; };
-		5B8F9F0D2F07E4C50092E4D0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8F9F0C2F07E4C50092E4D0 /* AppDelegate.swift */; };
-		5B8F9F112F07E4C50092E4D0 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F0F2F07E4C50092E4D0 /* Main.html */; };
-		5B8F9F132F07E4C50092E4D0 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F122F07E4C50092E4D0 /* Icon.png */; };
-		5B8F9F152F07E4C50092E4D0 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F142F07E4C50092E4D0 /* Style.css */; };
-		5B8F9F172F07E4C50092E4D0 /* Script.js in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F162F07E4C50092E4D0 /* Script.js */; };
-		5B8F9F192F07E4C50092E4D0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8F9F182F07E4C50092E4D0 /* ViewController.swift */; };
-		5B8F9F1C2F07E4C50092E4D0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F1A2F07E4C50092E4D0 /* Main.storyboard */; };
+		5BSWIFTUI012F09A0000000001 /* CacheStatusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BSWIFTUI002F09A0000000001 /* CacheStatusApp.swift */; };
+		5BSWIFTUI032F09A0000000001 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BSWIFTUI022F09A0000000001 /* ContentView.swift */; };
 		5B8F9F1E2F07E4C60092E4D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F1D2F07E4C60092E4D0 /* Assets.xcassets */; };
 		5B8F9F252F07E4C60092E4D0 /* CF Cache Status Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5B8F9F242F07E4C60092E4D0 /* CF Cache Status Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5B8F9F2A2F07E4C60092E4D0 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8F9F292F07E4C60092E4D0 /* SafariWebExtensionHandler.swift */; };
@@ -53,12 +48,8 @@
 /* Begin PBXFileReference section */
 		5B0588C92F08CB540004883F /* content.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = content.js; sourceTree = "<group>"; };
 		5B8F9F092F07E4C50092E4D0 /* CF Cache Status.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CF Cache Status.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5B8F9F0C2F07E4C50092E4D0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		5B8F9F102F07E4C50092E4D0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Main.html; sourceTree = "<group>"; };
-		5B8F9F122F07E4C50092E4D0 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
-		5B8F9F142F07E4C50092E4D0 /* Style.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = Style.css; sourceTree = "<group>"; };
-		5B8F9F162F07E4C50092E4D0 /* Script.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = Script.js; sourceTree = "<group>"; };
-		5B8F9F182F07E4C50092E4D0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		5BSWIFTUI002F09A0000000001 /* CacheStatusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheStatusApp.swift; sourceTree = "<group>"; };
+		5BSWIFTUI022F09A0000000001 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		5B8F9F1B2F07E4C50092E4D0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5B8F9F1D2F07E4C60092E4D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5B8F9F1F2F07E4C60092E4D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -520,8 +511,6 @@
 				INFOPLIST_FILE = "CF Cache Status/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Cache Status";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -530,8 +519,6 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
-					"-framework",
-					WebKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cfcachestatus.CF-Cache-Status";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -562,8 +549,6 @@
 				INFOPLIST_FILE = "CF Cache Status/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Cache Status";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMainStoryboardFile = Main;
-				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -572,8 +557,6 @@
 				OTHER_LDFLAGS = (
 					"-framework",
 					SafariServices,
-					"-framework",
-					WebKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cfcachestatus.CF-Cache-Status";
 				PRODUCT_NAME = "$(TARGET_NAME)";

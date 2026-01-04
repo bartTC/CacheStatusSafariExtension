@@ -183,6 +183,16 @@ browser.webNavigation.onBeforeNavigate.addListener((details) => {
   }
 });
 
+// Update URL after navigation completes (handles redirects)
+browser.webNavigation.onCompleted.addListener((details) => {
+  if (details.frameId === 0) {  // Main frame only
+    const data = tabData.get(details.tabId);
+    if (data && data.url !== details.url) {
+      data.url = details.url;  // Update to final URL after redirects
+    }
+  }
+});
+
 // Capture response headers for main document requests
 browser.webRequest.onHeadersReceived.addListener(
   (details) => {

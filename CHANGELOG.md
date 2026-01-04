@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v0.0.5] - 2026-01-04
+
+### Fixed
+- CDN detection not working (removed `type: module` from manifest - ES modules have isolated scope)
+
+### Changed
+- New app icon design (cloud with gradient border and HIT badge)
+- CI workflow split into parallel jobs (build, test, validate)
+
 ## [v0.0.4] - 2026-01-04
 
 ### Added

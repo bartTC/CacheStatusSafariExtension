@@ -19,8 +19,7 @@
     }
   },
   "background": {
-    "scripts": ["constants.js", "background.js"],
-    "type": "module"
+    "scripts": ["constants.js", "background.js"]
   },
   "content_scripts": [
     {

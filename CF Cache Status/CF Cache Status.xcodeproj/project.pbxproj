@@ -17,6 +17,7 @@
 		5B8F9F3F2F07E4C70092E4D0 /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F392F07E4C70092E4D0 /* popup.html */; };
 		5B8F9F402F07E4C70092E4D0 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F3A2F07E4C70092E4D0 /* manifest.json */; };
 		5B8F9F412F07E4C70092E4D0 /* popup.css in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F3B2F07E4C70092E4D0 /* popup.css */; };
+		5BE2138C2F0AA848002951C1 /* constants.js in Resources */ = {isa = PBXBuildFile; fileRef = 5BE2138B2F0AA848002951C1 /* constants.js */; };
 		5BSWIFTUI012F09A0000000001 /* CacheStatusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BSWIFTUI002F09A0000000001 /* CacheStatusApp.swift */; };
 		5BSWIFTUI032F09A0000000001 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BSWIFTUI022F09A0000000001 /* ContentView.swift */; };
 /* End PBXBuildFile section */
@@ -59,6 +60,7 @@
 		5B8F9F392F07E4C70092E4D0 /* popup.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = popup.html; path = Resources/popup.html; sourceTree = "<group>"; };
 		5B8F9F3A2F07E4C70092E4D0 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = Resources/manifest.json; sourceTree = "<group>"; };
 		5B8F9F3B2F07E4C70092E4D0 /* popup.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = popup.css; path = Resources/popup.css; sourceTree = "<group>"; };
+		5BE2138B2F0AA848002951C1 /* constants.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = constants.js; path = Resources/constants.js; sourceTree = "<group>"; };
 		5BSWIFTUI002F09A0000000001 /* CacheStatusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheStatusApp.swift; sourceTree = "<group>"; };
 		5BSWIFTUI022F09A0000000001 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -123,6 +125,7 @@
 		5B8F9F352F07E4C70092E4D0 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				5BE2138B2F0AA848002951C1 /* constants.js */,
 				5B0588C92F08CB540004883F /* content.js */,
 				5B8F9F362F07E4C70092E4D0 /* popup.js */,
 				5B8F9F372F07E4C70092E4D0 /* background.js */,
@@ -233,6 +236,7 @@
 				5B8F9F3F2F07E4C70092E4D0 /* popup.html in Resources */,
 				5B8F9F412F07E4C70092E4D0 /* popup.css in Resources */,
 				5B8F9F402F07E4C70092E4D0 /* manifest.json in Resources */,
+				5BE2138C2F0AA848002951C1 /* constants.js in Resources */,
 				5B8F9F3D2F07E4C70092E4D0 /* background.js in Resources */,
 				5B0588CA2F08CB540004883F /* content.js in Resources */,
 				5B8F9F3C2F07E4C70092E4D0 /* popup.js in Resources */,

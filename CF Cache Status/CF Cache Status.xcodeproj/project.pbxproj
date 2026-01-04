@@ -8,8 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		5B0588CA2F08CB540004883F /* content.js in Resources */ = {isa = PBXBuildFile; fileRef = 5B0588C92F08CB540004883F /* content.js */; };
-		5BSWIFTUI012F09A0000000001 /* CacheStatusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BSWIFTUI002F09A0000000001 /* CacheStatusApp.swift */; };
-		5BSWIFTUI032F09A0000000001 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BSWIFTUI022F09A0000000001 /* ContentView.swift */; };
 		5B8F9F1E2F07E4C60092E4D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F1D2F07E4C60092E4D0 /* Assets.xcassets */; };
 		5B8F9F252F07E4C60092E4D0 /* CF Cache Status Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5B8F9F242F07E4C60092E4D0 /* CF Cache Status Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5B8F9F2A2F07E4C60092E4D0 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8F9F292F07E4C60092E4D0 /* SafariWebExtensionHandler.swift */; };
@@ -19,6 +17,8 @@
 		5B8F9F3F2F07E4C70092E4D0 /* popup.html in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F392F07E4C70092E4D0 /* popup.html */; };
 		5B8F9F402F07E4C70092E4D0 /* manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F3A2F07E4C70092E4D0 /* manifest.json */; };
 		5B8F9F412F07E4C70092E4D0 /* popup.css in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F3B2F07E4C70092E4D0 /* popup.css */; };
+		5BSWIFTUI012F09A0000000001 /* CacheStatusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BSWIFTUI002F09A0000000001 /* CacheStatusApp.swift */; };
+		5BSWIFTUI032F09A0000000001 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BSWIFTUI022F09A0000000001 /* ContentView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,9 +48,6 @@
 /* Begin PBXFileReference section */
 		5B0588C92F08CB540004883F /* content.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = content.js; sourceTree = "<group>"; };
 		5B8F9F092F07E4C50092E4D0 /* CF Cache Status.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CF Cache Status.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5BSWIFTUI002F09A0000000001 /* CacheStatusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheStatusApp.swift; sourceTree = "<group>"; };
-		5BSWIFTUI022F09A0000000001 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		5B8F9F1B2F07E4C50092E4D0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		5B8F9F1D2F07E4C60092E4D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5B8F9F1F2F07E4C60092E4D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5B8F9F242F07E4C60092E4D0 /* CF Cache Status Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "CF Cache Status Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -62,6 +59,8 @@
 		5B8F9F392F07E4C70092E4D0 /* popup.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = popup.html; path = Resources/popup.html; sourceTree = "<group>"; };
 		5B8F9F3A2F07E4C70092E4D0 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = manifest.json; path = Resources/manifest.json; sourceTree = "<group>"; };
 		5B8F9F3B2F07E4C70092E4D0 /* popup.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; name = popup.css; path = Resources/popup.css; sourceTree = "<group>"; };
+		5BSWIFTUI002F09A0000000001 /* CacheStatusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheStatusApp.swift; sourceTree = "<group>"; };
+		5BSWIFTUI022F09A0000000001 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,17 +108,6 @@
 				5B8F9F1F2F07E4C60092E4D0 /* Info.plist */,
 			);
 			path = "CF Cache Status";
-			sourceTree = "<group>";
-		};
-		5B8F9F0E2F07E4C50092E4D0 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				5B8F9F0F2F07E4C50092E4D0 /* Main.html */,
-				5B8F9F122F07E4C50092E4D0 /* Icon.png */,
-				5B8F9F142F07E4C50092E4D0 /* Style.css */,
-				5B8F9F162F07E4C50092E4D0 /* Script.js */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		5B8F9F282F07E4C60092E4D0 /* CF Cache Status Extension */ = {
@@ -198,7 +186,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2600;
-				LastUpgradeCheck = 2600;
+				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					5B8F9F082F07E4C50092E4D0 = {
 						CreatedOnToolsVersion = 26.0;
@@ -281,25 +269,6 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		5B8F9F0F2F07E4C50092E4D0 /* Main.html */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5B8F9F102F07E4C50092E4D0 /* Base */,
-			);
-			name = Main.html;
-			sourceTree = "<group>";
-		};
-		5B8F9F1A2F07E4C50092E4D0 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				5B8F9F1B2F07E4C50092E4D0 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		5B8F9F2C2F07E4C60092E4D0 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -335,7 +304,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = H95JUDBHF7;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -359,6 +330,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -398,7 +370,9 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = H95JUDBHF7;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -415,6 +389,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -424,7 +399,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H95JUDBHF7;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
@@ -437,7 +412,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -459,7 +434,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H95JUDBHF7;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
@@ -472,7 +447,7 @@
 					"@executable_path/../Frameworks",
 					"@executable_path/../../../../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -497,7 +472,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H95JUDBHF7;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
@@ -535,7 +510,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = H95JUDBHF7;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;

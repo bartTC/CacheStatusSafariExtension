@@ -2,10 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [v0.0.6] - 2026-01-05
 
 ### Changed
+- Complete popup UI redesign with hero section and metrics grid
 - Container app now uses toolbar cloud SVG instead of SF Symbol
+- Improved dark mode support
 
 ## [v0.0.5] - 2026-01-04
 

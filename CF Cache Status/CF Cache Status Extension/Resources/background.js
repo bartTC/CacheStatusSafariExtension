@@ -18,6 +18,20 @@ const tabData = new Map();
 /** Tracks tabs with pending navigations to capture only the first main request */
 const pendingNavigations = new Set();
 
+/** Connected popup ports, keyed by tab ID they're watching */
+const popupPorts = new Map();
+
+/**
+ * Notifies the popup if one is connected and watching this tab.
+ * @param {number} tabId - Tab ID that was updated
+ */
+function notifyPopup(tabId) {
+  const port = popupPorts.get(tabId);
+  if (port) {
+    port.postMessage({ type: 'update', data: tabData.get(tabId) || null });
+  }
+}
+
 // =============================================================================
 // Badge Management
 // =============================================================================
@@ -115,6 +129,7 @@ browser.webRequest.onHeadersReceived.addListener(
     });
 
     updateBadge(details.tabId, status, cdn);
+    notifyPopup(details.tabId);
   },
   { urls: ['<all_urls>'] },
   ['responseHeaders']
@@ -175,7 +190,31 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
         timestamp: Date.now()
       });
     }
+    notifyPopup(sender.tab.id);
   }
 
   return true;
+});
+
+// Handle popup connections for reactive updates
+browser.runtime.onConnect.addListener((port) => {
+  if (port.name !== 'popup') return;
+
+  port.onMessage.addListener((msg) => {
+    if (msg.type === 'subscribe' && msg.tabId) {
+      popupPorts.set(msg.tabId, port);
+      // Send initial data immediately
+      port.postMessage({ type: 'update', data: tabData.get(msg.tabId) || null });
+    }
+  });
+
+  port.onDisconnect.addListener(() => {
+    // Remove port from map when popup closes
+    for (const [tabId, p] of popupPorts) {
+      if (p === port) {
+        popupPorts.delete(tabId);
+        break;
+      }
+    }
+  });
 });

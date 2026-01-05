@@ -13,23 +13,6 @@ const ICONS = {
 };
 
 // =============================================================================
-// Initialization
-// =============================================================================
-
-async function init() {
-  try {
-    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
-    if (!tabs?.length) return;
-
-    const data = await browser.runtime.sendMessage({ type: 'getTabData', tabId: tabs[0].id });
-    updateUI(data);
-  } catch (error) {
-    console.error('Error loading data:', error);
-    renderHero('ERROR', 'Error loading data', 'neutral');
-  }
-}
-
-// =============================================================================
 // UI Updates
 // =============================================================================
 
@@ -296,5 +279,32 @@ function formatHeaderValue(key, value) {
   return value;
 }
 
-// Bootstrap
-document.addEventListener('DOMContentLoaded', init);
+/**
+ * Bootstrap with reactive updates via port connection.
+ *
+ * Instead of polling, the popup subscribes to updates from background.js.
+ * When data changes (headers received, performance metrics arrive), the
+ * background pushes the update through the port.
+ *
+ * The port auto-disconnects when the popup closes.
+ */
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+    if (!tabs?.length) return;
+
+    const port = browser.runtime.connect({ name: 'popup' });
+
+    port.onMessage.addListener((msg) => {
+      if (msg.type === 'update') {
+        updateUI(msg.data);
+      }
+    });
+
+    // Subscribe to updates for this tab (also triggers initial data send)
+    port.postMessage({ type: 'subscribe', tabId: tabs[0].id });
+  } catch (error) {
+    console.error('Error connecting:', error);
+    renderHero('ERROR', 'Error loading data', 'neutral');
+  }
+});

@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "5B8F9F082F07E4C50092E4D0"
-               BuildableName = "CF Cache Status.app"
+               BuildableName = "Cache Status.app"
                BlueprintName = "CF Cache Status"
                ReferencedContainer = "container:CF Cache Status.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "5B8F9F082F07E4C50092E4D0"
-            BuildableName = "CF Cache Status.app"
+            BuildableName = "Cache Status.app"
             BlueprintName = "CF Cache Status"
             ReferencedContainer = "container:CF Cache Status.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "5B8F9F082F07E4C50092E4D0"
-            BuildableName = "CF Cache Status.app"
+            BuildableName = "Cache Status.app"
             BlueprintName = "CF Cache Status"
             ReferencedContainer = "container:CF Cache Status.xcodeproj">
          </BuildableReference>

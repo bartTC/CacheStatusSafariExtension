@@ -484,6 +484,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CF Cache Status/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Cache Status";
+				INFOPLIST_KEY_CFBundleName = "Elephant House";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -495,7 +496,7 @@
 					SafariServices,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cfcachestatus.CF-Cache-Status";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Cache Status";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -522,6 +523,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "CF Cache Status/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Cache Status";
+				INFOPLIST_KEY_CFBundleName = "Elephant House";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -533,7 +535,7 @@
 					SafariServices,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.cfcachestatus.CF-Cache-Status";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Cache Status";
 				REGISTER_APP_GROUPS = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;

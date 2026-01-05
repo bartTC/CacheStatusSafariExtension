@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Privacy Policy document (PRIVACY.md)
+
+### Changed
+- App renamed from "CF Cache Status" to "Cache Status"
+- Safari now shows "Cache Status by Elephant House" instead of "by CF Cache Status"
+
 ## [v0.0.7] - 2026-01-05
 
 ### Added

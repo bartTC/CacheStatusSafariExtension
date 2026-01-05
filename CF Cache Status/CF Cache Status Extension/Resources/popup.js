@@ -48,7 +48,7 @@ function updateUI(data) {
   } else if (hasHeaders) {
     renderHero('N/A', 'No cache status detected', 'neutral');
   } else {
-    renderHero('No Data', 'No CDN headers found', 'neutral');
+    renderHero('No Data', 'Navigate or reload to capture headers', 'neutral');
     hideAllSections();
     return;
   }

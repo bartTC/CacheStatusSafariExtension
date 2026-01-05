@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Mac App Store release pipeline (`just archive-appstore`, `just upload-appstore`)
+- Release documentation moved to dedicated RELEASE.md
+
+### Changed
+- Popup now uses reactive updates via port connection (no more polling)
+- "No Data" message now says "Navigate or reload to capture headers" instead of "No CDN headers found"
+
 ## [v0.0.6] - 2026-01-05
 
 ### Changed

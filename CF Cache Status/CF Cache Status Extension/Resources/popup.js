@@ -1,13 +1,16 @@
 /**
  * Cache Status - Popup Script
- *
- * Displays CDN cache information for the current tab in a popup UI.
- * Shows cache status, edge location, and relevant HTTP headers.
+ * 
+ * macOS Native Inspector Design
+ * Features: Dark Mode support, Dynamic Grid, Full Stats.
  */
 
-// Import shared constants (loaded via popup.html)
-// Uses: EDGE_LOCATIONS, CACHE_HEADERS, RESPONSE_HEADERS, STATUS_DESCRIPTIONS,
-//       PERFORMANCE_METRICS, getCDNName
+const ICONS = {
+  CHECK: '<path d="M10.6,18.9L10.6,18.9c-0.4,0.4-1,0.4-1.4,0L4.3,14c-0.4-0.4-0.4-1,0-1.4s1-0.4,1.4,0l4.2,4.2l9.6-9.6 c0.4-0.4,1-0.4,1.4,0s0.4,1,0,1.4L10.6,18.9z"/>',
+  CROSS: '<path d="M13.4,12l5.3-5.3c0.4-0.4,0.4-1,0-1.4s-1-0.4-1.4,0L12,10.6L6.7,5.3c-0.4-0.4-1-0.4-1.4,0s-0.4,1,0,1.4L10.6,12l-5.3,5.3 c-0.4,0.4-0.4,1,0,1.4s1,0.4,1.4,0L12,13.4l5.3,5.3c0.4,0.4,1,0.4,1.4,0s0.4-1,0-1.4L13.4,12z"/>',
+  WARN: '<path d="M12,2L1,21h22L12,2z M13,18h-2v-2h2V18z M13,14h-2V8h2V14z"/>',
+  DASH: '<path d="M7,11h10c0.6,0,1,0.4,1,1s-0.4,1-1,1H7c-0.6,0-1-0.4-1-1S6.4,11,7,11z"/>'
+};
 
 // =============================================================================
 // Initialization
@@ -22,6 +25,7 @@ async function init() {
     updateUI(data);
   } catch (error) {
     console.error('Error loading data:', error);
+    renderHero('ERROR', 'Error loading data', 'neutral');
   }
 }
 
@@ -33,170 +37,264 @@ function updateUI(data) {
   const hasHeaders = data?.headers && Object.keys(data.headers).length > 0;
   const perf = data?.performance;
 
-  // Update status badge and label
-  const badge = document.getElementById('status-badge');
-  const label = document.getElementById('status-label');
-
-  let badgeText = '--';
-  let labelText = 'No CDN detected';
-  let badgeClass = '';
-
+  // 1. Hero Section
   if (hasHeaders && data.status) {
-    badgeText = data.status;
-    badgeClass = data.status.toLowerCase();
     const cdnName = getCDNName(data.cdn);
-    labelText = (STATUS_DESCRIPTIONS[data.status.toUpperCase()] || `${cdnName} cache status`)
+    const statusType = getStatusType(data.status);
+    const subtitle = (STATUS_DESCRIPTIONS[data.status.toUpperCase()] || `${cdnName} detected`)
       .replace('{cdn}', cdnName);
+    
+    renderHero(data.status, subtitle, statusType);
   } else if (hasHeaders) {
-    badgeText = 'N/A';
-    labelText = 'No cache status header';
-  }
-
-  // Append performance summary to label
-  const perfSummary = formatPerfSummary(perf);
-  if (perfSummary) labelText += ` (${perfSummary})`;
-
-  badge.textContent = badgeText;
-  badge.className = badgeClass;
-  label.textContent = labelText;
-
-  // Populate sections
-  if (hasHeaders) {
-    populateHeaders(data.headers, data.cdn);
+    renderHero('N/A', 'No cache status detected', 'neutral');
   } else {
-    document.getElementById('cache-section').classList.add('hidden');
-    document.getElementById('response-section').classList.add('hidden');
+    renderHero('No Data', 'No CDN headers found', 'neutral');
+    hideAllSections();
+    return;
   }
 
-  populatePerformance(perf);
+  // 2. Metrics Grid (Dynamic)
+  populateMetrics(perf, data.headers);
 
-  // Show URL
+  // 3. Headers List
+  populateHeadersList(data.headers);
+
+  // 4. Performance Breakdown
+  populatePerformanceList(perf);
+
+  // 5. Info / Help Messages
+  populateInfoSection(data);
+
+  // 6. Footer (URL)
   if (data?.url) {
     document.getElementById('page-url').textContent = data.url;
-    document.getElementById('url-container').classList.remove('hidden');
-  }
-
-  // Show CDN-specific info notes (only when relevant headers are present)
-  if (data?.cdn === 'cloudfront' && data.status === 'MISS') {
-    document.getElementById('cloudfront-info').classList.remove('hidden');
-  } else if (data?.cdn === 'fastly' && data.headers?.['x-cache']) {
-    document.getElementById('fastly-info').classList.remove('hidden');
+    document.getElementById('footer').classList.remove('hidden');
   }
 }
 
-function formatPerfSummary(perf) {
-  if (!perf) return '';
-  const parts = [];
-  if (perf.ttfb > 0) parts.push(formatValue(perf.ttfb));
-  if (perf.transferSize > 0) parts.push(formatValue(perf.transferSize, 'bytes'));
-  return parts.join(', ');
+function hideAllSections() {
+  document.getElementById('metrics-section').classList.add('hidden');
+  document.getElementById('headers-section').classList.add('hidden');
+  document.getElementById('perf-section').classList.add('hidden');
+  document.getElementById('info-section').classList.add('hidden');
+  document.getElementById('footer').classList.add('hidden');
 }
 
-function populateHeaders(headers, cdn) {
-  const cacheRows = document.getElementById('cache-rows');
-  const responseRows = document.getElementById('response-rows');
-  cacheRows.innerHTML = '';
-  responseRows.innerHTML = '';
+// =============================================================================
+// Render Functions
+// =============================================================================
 
-  const shown = new Set();
-  let cacheCount = 0, responseCount = 0;
+function renderHero(title, subtitle, type) {
+  const titleEl = document.getElementById('status-title');
+  const subEl = document.getElementById('status-subtitle');
+  const iconContainer = document.getElementById('hero-icon');
+  
+  titleEl.textContent = title;
+  subEl.textContent = subtitle;
 
-  for (const key of CACHE_HEADERS) {
-    if (headers[key] && !shown.has(key)) {
-      cacheRows.appendChild(createRow(titleCase(key), formatHeaderValue(key, headers[key])));
-      shown.add(key);
-      cacheCount++;
-    }
-  }
+  titleEl.className = `status-title status-${type}`;
+  iconContainer.className = `hero-icon-container status-${type}`;
 
-  for (const key of RESPONSE_HEADERS) {
-    if (headers[key] && !shown.has(key)) {
-      responseRows.appendChild(createRow(titleCase(key), headers[key]));
-      shown.add(key);
-      responseCount++;
-    }
-  }
-
-  document.getElementById('cache-section').classList.toggle('hidden', cacheCount === 0);
-  document.getElementById('response-section').classList.toggle('hidden', responseCount === 0);
+  let iconPath = ICONS.DASH;
+  if (type === 'hit') iconPath = ICONS.CHECK;
+  if (type === 'miss' || type === 'error') iconPath = ICONS.CROSS;
+  if (type === 'warn') iconPath = ICONS.WARN;
+  
+  iconContainer.innerHTML = `<svg class="hero-icon-svg" viewBox="0 0 24 24">${iconPath}</svg>`;
 }
 
-function populatePerformance(perf) {
-  const section = document.getElementById('performance-section');
-  const rows = document.getElementById('performance-rows');
-  rows.innerHTML = '';
+function populateMetrics(perf, headers) {
+  const grid = document.getElementById('metrics-grid');
+  grid.innerHTML = '';
+  const metrics = [];
+
+  // 1. TTFB
+  if (perf?.ttfb) {
+    metrics.push({ label: 'TTFB', value: formatTime(perf.ttfb) });
+  }
+
+  // 2. Transfer Size
+  if (perf?.transferSize) {
+    metrics.push({ label: 'Size', value: formatBytes(perf.transferSize) });
+  }
+
+  // 3. Age
+  if (headers['age']) {
+    metrics.push({ label: 'Age', value: formatAge(headers['age']) });
+  }
+
+  // 4. POP Location
+  const pop = findPop(headers);
+  if (pop) {
+    metrics.push({ label: 'Edge Location', value: pop });
+  }
+
+  // --- Dynamic Grid Logic ---
+  // If we have an odd number of items, we make the LAST item span full width
+  // to prevent a "gap" in the grid.
+  
+  if (metrics.length === 0) {
+    document.getElementById('metrics-section').classList.add('hidden');
+  } else {
+    document.getElementById('metrics-section').classList.remove('hidden');
+    
+    metrics.forEach((m, index) => {
+      // Check if this is the last item AND the total count is odd
+      const isLast = index === metrics.length - 1;
+      const isOddCount = metrics.length % 2 !== 0;
+      
+      const shouldSpan = isLast && isOddCount;
+      
+      grid.appendChild(createGridItem(m.label, m.value, shouldSpan));
+    });
+  }
+}
+
+function populatePerformanceList(perf) {
+  const list = document.getElementById('perf-list');
+  list.innerHTML = '';
+  const section = document.getElementById('perf-section');
 
   if (!perf) {
     section.classList.add('hidden');
     return;
   }
 
+  // Include all timing-related metrics
   let count = 0;
   for (const m of PERFORMANCE_METRICS) {
+    // Skip non-timing metrics like transferSize
+    if (m.key === 'transferSize') continue;
+    
     const val = perf[m.key];
-    if (val == null || val < 0 || (val === 0 && m.optional)) continue;
-    rows.appendChild(createRow(m.label, formatValue(val, m.format)));
-    count++;
+    if (val != null && val >= 0 && !(val === 0 && m.optional)) {
+      list.appendChild(createDetailRow(m.label, formatTime(val), false));
+      count++;
+    }
   }
 
   section.classList.toggle('hidden', count === 0);
+}
+
+function populateHeadersList(headers) {
+  const list = document.getElementById('headers-list');
+  list.innerHTML = '';
+  
+  const keysToShow = [...CACHE_HEADERS, ...RESPONSE_HEADERS];
+  const shown = new Set();
+  let count = 0;
+
+  for (const key of keysToShow) {
+    if (headers[key] && !shown.has(key)) {
+      const displayKey = key.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join('-');
+      list.appendChild(createDetailRow(displayKey, formatHeaderValue(key, headers[key]), true));
+      shown.add(key);
+      count++;
+    }
+  }
+
+  document.getElementById('headers-section').classList.toggle('hidden', count === 0);
+}
+
+function populateInfoSection(data) {
+  const section = document.getElementById('info-section');
+  const cfInfo = document.getElementById('info-cloudfront');
+  const fastlyInfo = document.getElementById('info-fastly');
+  
+  // Reset
+  section.classList.add('hidden');
+  cfInfo.classList.add('hidden');
+  fastlyInfo.classList.add('hidden');
+
+  let showSection = false;
+
+  if (data?.cdn === 'cloudfront' && data.status === 'MISS') {
+    cfInfo.classList.remove('hidden');
+    showSection = true;
+  } else if (data?.cdn === 'fastly' && data.headers?.['x-cache']) {
+    fastlyInfo.classList.remove('hidden');
+    showSection = true;
+  }
+
+  if (showSection) {
+    section.classList.remove('hidden');
+  }
 }
 
 // =============================================================================
 // Helpers
 // =============================================================================
 
-function createRow(label, value) {
-  const row = document.createElement('div');
-  row.className = 'row';
-  row.innerHTML = `<span class="row-label">${label}</span><span class="row-value">${value}</span>`;
-  return row;
+function createGridItem(label, value, fullWidth = false) {
+  const div = document.createElement('div');
+  div.className = 'metric-item' + (fullWidth ? ' full-width' : '');
+  div.innerHTML = `<span class="metric-label">${label}</span><span class="metric-value">${value}</span>`;
+  return div;
 }
 
-function titleCase(header) {
-  return header.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('-');
+function createDetailRow(key, value, monospace = false) {
+  const div = document.createElement('div');
+  div.className = 'detail-row';
+  const valClass = monospace ? 'detail-value monospace' : 'detail-value';
+  div.innerHTML = `<span class="detail-key">${key}</span><span class="${valClass}">${value}</span>`;
+  return div;
 }
 
-function formatValue(val, format) {
-  if (format === 'bytes') {
-    if (val < 1024) return `${val} B`;
-    if (val < 1024 * 1024) return `${(val / 1024).toFixed(1)} KB`;
-    return `${(val / (1024 * 1024)).toFixed(2)} MB`;
+function getStatusType(status) {
+  const s = status.toUpperCase();
+  if (s === 'HIT') return 'hit';
+  if (s === 'MISS' || s === 'ERROR') return 'miss';
+  if (['EXPIRED', 'STALE', 'REVALIDATED', 'REFRESH'].includes(s)) return 'warn';
+  return 'neutral';
+}
+
+function formatTime(ms) {
+  return ms < 1000 ? `${Math.round(ms)}ms` : `${(ms / 1000).toFixed(2)}s`;
+}
+
+function formatBytes(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function formatAge(val) {
+  const s = parseInt(val, 10);
+  if (isNaN(s)) return val;
+  if (s < 60) return `${s}s`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ${s % 60}s`;
+  return `${Math.floor(s / 3600)}h ${Math.floor((s % 3600) / 60)}m`;
+}
+
+function findPop(headers) {
+  let code = null;
+  if (headers['cf-pop']) code = headers['cf-pop'].toUpperCase();
+  else if (headers['x-amz-cf-pop']) code = headers['x-amz-cf-pop'].slice(0, 3).toUpperCase();
+  
+  if (!code && headers['cf-ray']) {
+    const parts = headers['cf-ray'].split('-');
+    if (parts.length > 1) {
+      code = parts[parts.length - 1].toUpperCase();
+    }
   }
-  return val < 1000 ? `${val} ms` : `${(val / 1000).toFixed(2)} s`;
+
+  if (code) {
+    if (EDGE_LOCATIONS[code]) {
+      return `${EDGE_LOCATIONS[code]} (${code})`;
+    }
+    return code;
+  }
+  return null;
 }
 
 function formatHeaderValue(key, value) {
-  if (key === 'age') {
-    const s = parseInt(value, 10);
-    if (!isNaN(s)) {
-      if (s < 60) return `${s}s`;
-      if (s < 3600) return `${Math.floor(s / 60)}m ${s % 60}s`;
-      return `${Math.floor(s / 3600)}h ${Math.floor((s % 3600) / 60)}m`;
-    }
+  if (key.toLowerCase() === 'cf-ray') {
+     const parts = value.split('-');
+     const code = parts[parts.length - 1].toUpperCase();
+     if (EDGE_LOCATIONS[code]) return `${value} (${EDGE_LOCATIONS[code]})`;
   }
-
-  if (key === 'cf-ray') {
-    const parts = value.split('-');
-    if (parts.length >= 2) {
-      const code = parts[parts.length - 1].toUpperCase();
-      if (EDGE_LOCATIONS[code]) return `${EDGE_LOCATIONS[code]} (${code})`;
-    }
-  }
-
-  if (key === 'x-amz-cf-pop' || key === 'cf-pop') {
-    const match = value.match(/^([A-Z]{3})/i);
-    if (match) {
-      const code = match[1].toUpperCase();
-      if (EDGE_LOCATIONS[code]) return `${EDGE_LOCATIONS[code]} (${value})`;
-    }
-  }
-
   return value;
 }
 
-// =============================================================================
 // Bootstrap
-// =============================================================================
-
 document.addEventListener('DOMContentLoaded', init);

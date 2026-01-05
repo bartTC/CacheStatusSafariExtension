@@ -1,13 +1,43 @@
 /**
  * CF Cache Status - Popup Styles
  *
- * iOS Settings-inspired design with grouped sections and rounded cards.
- * Supports both light and dark mode via prefers-color-scheme.
+ * macOS Native Inspector Design
  */
 
-/* =============================================================================
-   Reset & Base
-   ============================================================================= */
+:root {
+  color-scheme: light dark;
+  
+  --bg-color: #ffffff;
+  --text-primary: #1d1d1f;
+  --text-secondary: #86868b;
+  --separator-color: #e5e5ea;
+  --highlight-bg: #f5f5f7;
+  --info-bg: #f2f2f7;
+  --accent-color: #007aff;
+  
+  /* Status Colors */
+  --color-hit: #34c759;
+  --color-miss: #ff3b30;
+  --color-warn: #ff9500;
+  --color-neutral: #8e8e93;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #1e1e1e;
+    --text-primary: #f5f5f7;
+    --text-secondary: #98989d;
+    --separator-color: #38383a;
+    --highlight-bg: #2c2c2e;
+    --info-bg: #2c2c2e;
+    
+    /* Adjusted for dark mode contrast */
+    --color-hit: #30d158;
+    --color-miss: #ff453a;
+    --color-warn: #ff9f0a;
+    --color-neutral: #98989d;
+  }
+}
 
 * {
   margin: 0;
@@ -16,244 +46,246 @@
 }
 
 html {
-  overflow: hidden;
+  /* Fix scroll performance and rubber-banding */
+  overflow: hidden; 
+  height: 100%;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    "Helvetica Neue", sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
   font-size: 13px;
-  min-width: 420px;
-  max-width: 500px;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  width: 380px;
   max-height: 600px;
-  background: #f2f2f7;
-  color: #1c1c1e;
+  
+  /* Enable scrolling on body */
   overflow-y: auto;
   overflow-x: hidden;
+  height: 100%;
+  
+  /* Hardware acceleration for scrolling */
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-}
-
-@media (prefers-color-scheme: dark) {
-  body {
-    background: #1c1c1e;
-    color: #f5f5f7;
-  }
-}
-
-.container {
-  padding: 16px;
-  transform: translateZ(0); /* Force GPU acceleration for smooth scrolling */
+  transform: translateZ(0);
   will-change: scroll-position;
 }
 
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
 /* =============================================================================
-   Status Card (Hero Section)
+   Hero Section
    ============================================================================= */
 
-.status-card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  text-align: center;
-  margin-bottom: 16px;
+.hero-section {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  background: var(--bg-color);
+  flex-shrink: 0; /* Never shrink the header */
 }
 
-@media (prefers-color-scheme: dark) {
-  .status-card {
-    background: #2c2c2e;
-  }
+.hero-icon-container {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 166px; /* Wait, this was a typo in previous version? Let me check original */
+  margin-right: 16px;
 }
 
-#status-badge {
-  display: inline-block;
-  padding: 10px 28px;
-  border-radius: 10px;
-  font-size: 20px;
+.hero-icon-svg {
+  width: 32px;
+  height: 32px;
+  fill: currentColor;
+}
+
+.hero-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.status-title {
+  font-size: 17px;
   font-weight: 600;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-  background: #8e8e93;
-  color: white;
+  letter-spacing: -0.4px;
+  color: var(--text-primary);
+  line-height: 1.2;
 }
 
-/* Status badge colors (Apple system colors) */
-#status-badge.hit {
-  background: #34c759;
-} /* Green */
-#status-badge.miss {
-  background: #ff3b30;
-} /* Red */
-#status-badge.error {
-  background: #ff3b30;
-} /* Red */
-#status-badge.expired,
-#status-badge.stale,
-#status-badge.revalidated,
-#status-badge.refresh {
-  background: #ff9500;
-} /* Orange */
-#status-badge.bypass,
-#status-badge.dynamic {
-  background: #8e8e93;
-} /* Gray */
-
-#status-label {
+.status-subtitle {
   font-size: 13px;
-  color: #8e8e93;
-  margin-top: 4px;
+  color: var(--text-secondary);
+  margin-top: 2px;
 }
 
 /* =============================================================================
-   Sections (Grouped Cards)
+   Components
    ============================================================================= */
+
+.divider {
+  height: 1px;
+  background-color: var(--separator-color);
+  margin: 0;
+  width: 100%;
+}
 
 .section {
-  margin-bottom: 16px;
+  padding: 12px 0;
 }
 
-.section-header {
-  font-size: 13px;
+.section-label {
+  padding: 0 20px 8px 20px;
+  font-size: 11px;
   font-weight: 600;
-  color: #6e6e73;
+  color: var(--text-secondary);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 8px;
-  padding-left: 16px;
-}
-
-.section-card {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-@media (prefers-color-scheme: dark) {
-  .section-card {
-    background: #2c2c2e;
-  }
+  letter-spacing: 0.3px;
 }
 
 /* =============================================================================
-   Header Rows
+   Metrics Grid
    ============================================================================= */
 
-.row {
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background-color: var(--separator-color);
+  border-top: 1px solid var(--separator-color);
+  border-bottom: 1px solid var(--separator-color);
+}
+
+.metric-item {
+  background-color: var(--bg-color);
+  padding: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* Fix ellipsis in flex item */
+}
+
+.metric-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.metric-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* =============================================================================
+   Details List
+   ============================================================================= */
+
+.details-list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--separator-color);
+  border-bottom: 1px solid var(--separator-color);
+}
+
+.detail-row {
   display: flex;
   justify-content: space-between;
-  align-items: start;
-  padding: 12px 16px;
-  border-bottom: 1px solid #e5e5ea;
-  min-height: 44px;
+  padding: 8px 20px 8px 0;
+  margin-left: 20px;
+  font-size: 12px;
+  line-height: 1.4;
+  background-color: var(--bg-color);
+  border-bottom: 1px solid var(--separator-color);
 }
 
-@media (prefers-color-scheme: dark) {
-  .row {
-    border-bottom-color: #3a3a3c;
-  }
-}
-
-.row:last-child {
+.detail-row:last-child {
   border-bottom: none;
 }
 
-.row-label {
-  font-size: 13px;
-  color: #1c1c1e;
+.detail-key {
+  color: var(--text-primary);
   flex-shrink: 0;
+  margin-right: 12px;
 }
 
-@media (prefers-color-scheme: dark) {
-  .row-label {
-    color: #f5f5f7;
-  }
-}
-
-.row-value {
-  font-size: 13px;
-  color: #8e8e93;
+.detail-value {
+  color: var(--text-secondary);
   text-align: right;
-  word-break: break-word;
-  margin-left: 16px;
-}
-
-/* =============================================================================
-   Empty State
-   ============================================================================= */
-
-#no-data {
-  background: white;
-  border-radius: 12px;
-  padding: 32px 20px;
-  text-align: center;
-  color: #8e8e93;
-}
-
-@media (prefers-color-scheme: dark) {
-  #no-data {
-    background: #2c2c2e;
-  }
-}
-
-/* =============================================================================
-   URL Footer
-   ============================================================================= */
-
-#url-container {
-  padding: 0 16px 24px 16px;
-  font-size: 11px;
-  color: #8e8e93;
   word-break: break-all;
 }
 
+.detail-value.monospace {
+  font-family: "SF Mono", Menlo, Monaco, monospace;
+  font-size: 11px;
+}
+
 /* =============================================================================
-   Info Card
+   Info Banner
    ============================================================================= */
 
-.info-card {
-  background: white;
-  border-radius: 12px;
-  padding: 12px 16px;
-}
-
-@media (prefers-color-scheme: dark) {
-  .info-card {
-    background: #2c2c2e;
-  }
-}
-
-.info-note {
+.info-banner {
+  margin: 0 20px;
+  padding: 12px;
+  background-color: var(--info-bg);
+  border-radius: 8px;
   font-size: 12px;
-  color: #8e8e93;
+  color: var(--text-secondary);
   line-height: 1.5;
 }
 
-.info-note a {
-  color: #007aff;
+.info-banner a {
+  color: var(--accent-color);
   text-decoration: none;
 }
 
-.info-note a:hover {
+.info-banner a:hover {
   text-decoration: underline;
 }
 
 .info-diagram {
   font-family: "SF Mono", Menlo, Monaco, monospace;
   font-size: 11px;
-  color: #6e6e73;
-  background: #f2f2f7;
+  background-color: rgba(120, 120, 128, 0.1);
+  padding: 8px;
   border-radius: 6px;
-  padding: 10px 12px;
-  margin: 8px 0;
-  text-align: left;
-  line-height: 1.4;
+  margin-top: 8px;
+  white-space: pre;
+  overflow-x: auto;
+  color: var(--text-primary);
 }
 
-@media (prefers-color-scheme: dark) {
-  .info-diagram {
-    background: #3a3a3c;
-    color: #a1a1a6;
-  }
+/* =============================================================================
+   Footer
+   ============================================================================= */
+
+.footer {
+  padding: 8px 20px;
+  border-top: 1px solid var(--separator-color);
+  background: var(--bg-color);
+  margin-top: 4px;
+}
+
+.url-truncate {
+  font-size: 11px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.7;
 }
 
 /* =============================================================================
@@ -263,3 +295,8 @@ body {
 .hidden {
   display: none !important;
 }
+
+.status-hit { color: var(--color-hit); }
+.status-miss { color: var(--color-miss); }
+.status-warn { color: var(--color-warn); }
+.status-neutral { color: var(--color-neutral); }

@@ -99,76 +99,9 @@ just xcode        # Open project in Xcode
 
 ## Release Process
 
-Creating a signed and notarized release requires Apple Developer credentials.
-
-### Prerequisites
-
-1. **Apple Developer Account** with a Developer ID certificate
-
-2. **Create `.env`** in the project root:
-
-   ```bash
-   cp .env.example .env
-   ```
-
-   Then edit `.env` with your credentials:
-
-   | Variable             | Description                                                                 |
-   | -------------------- | --------------------------------------------------------------------------- |
-   | `APPLE_ID`           | Your Apple ID email                                                         |
-   | `APPLE_TEAM_ID`      | 10-character Team ID from [developer.apple.com/account](https://developer.apple.com/account) → Membership |
-   | `APPLE_APP_PASSWORD` | App-specific password from [appleid.apple.com](https://appleid.apple.com/account/manage) → Sign-In and Security → App-Specific Passwords |
-
-3. **Configure Xcode signing** with your Developer ID certificate
-
-### Release Commands
-
-**Full automated release** (archive → submit → wait → staple):
-
-```bash
-just release v0.0.5
-```
-
-**Step-by-step release** (useful when notarization takes time):
-
-```bash
-# 1. Build and sign
-just archive v0.0.5
-
-# 2. Submit for notarization
-just submit
-
-# 3. Check status (optional)
-just status
-
-# 4. Wait for completion (can take minutes to hours)
-just wait
-
-# 5. Staple ticket and create final zip
-just staple
-```
-
-**Other commands:**
-
-```bash
-just history      # Show notarization history
-just log <id>     # Get notarization log for a submission
-just builds       # List available builds
-```
-
-### Build Output
-
-Builds are organized by version in `build/<version>/`:
-
-```
-build/
-├── v0.0.4/
-│   ├── archive/CF Cache Status.xcarchive
-│   ├── export/CF Cache Status.app
-│   ├── CacheStatus-v0.0.4.zip          # Final notarized release
-│   └── .submission_id                   # Notarization tracking
-└── .current_version                     # Tracks active build
-```
+See [RELEASE.md](RELEASE.md) for the full release guide covering:
+- Direct distribution (GitHub) with notarization
+- Mac App Store submission
 
 ## Project Structure
 

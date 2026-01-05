@@ -92,3 +92,34 @@ log id:
 # List available builds
 builds:
     @ls -d {{build_dir}}/v* {{build_dir}}/dev 2>/dev/null | xargs -I{} basename {} | sort -V || echo "(none)"
+
+# =============================================================================
+# App Store (requires Apple Distribution certificate)
+# =============================================================================
+
+# Build and sign for App Store (optionally specify a tag)
+archive-appstore tag="":
+    ./scripts/archive-appstore.sh {{tag}}
+
+# Upload to App Store Connect
+upload-appstore version="":
+    ./scripts/upload-appstore.sh {{version}}
+
+# Validate App Store package (without uploading)
+validate-appstore version="":
+    #!/usr/bin/env bash
+    set -e
+    ver="${1:-}"
+    [[ -z "$ver" && -f "{{build_dir}}/.current_version_appstore" ]] && ver=$(cat "{{build_dir}}/.current_version_appstore")
+    [[ -z "$ver" ]] && { echo "No version specified"; exit 1; }
+    pkg=$(find "{{build_dir}}/$ver/export" -name "*.pkg" -type f 2>/dev/null | head -1)
+    [[ -z "$pkg" ]] && { echo "No .pkg found for $ver"; exit 1; }
+    echo "Validating: $pkg"
+    xcrun altool --validate-app -f "$pkg" --type macos --apple-id "$APPLE_ID" --password "$APPLE_APP_PASSWORD"
+
+# Full App Store pipeline: archive, validate, upload
+release-appstore tag="":
+    #!/usr/bin/env bash
+    set -e
+    just archive-appstore {{tag}}
+    just upload-appstore

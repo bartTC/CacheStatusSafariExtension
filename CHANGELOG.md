@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [v0.0.7] - 2026-01-05
 
 ### Added
 - Mac App Store release pipeline (`just archive-appstore`, `just upload-appstore`)

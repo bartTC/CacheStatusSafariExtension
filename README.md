@@ -16,7 +16,7 @@ After downloading, unzip and move the app to your Applications folder. On first 
 
 ## Features
 
-- **Toolbar Badge** — Color-coded cache status (HIT/MISS) visible at a glance
+- **Toolbar Badge** — Cache status (HIT/MISS) visible at a glance
 - **Detailed Popup** — View all cache-related HTTP headers
 - **Edge Location Mapping** — Translates CDN POP codes (e.g., `FRA56`) to city names (e.g., `Frankfurt, DE`)
 - **Multi-CDN Support** — Works with Cloudflare, CloudFront, Fastly, Akamai, Bunny CDN, Varnish, and more
@@ -146,7 +146,7 @@ Justfile                                # Build commands
 2. **Header Capture** — `webRequest.onHeadersReceived` captures response headers for the main document only
 3. **CDN Detection** — Headers are analyzed to identify the CDN provider
 4. **Status Parsing** — Cache status is extracted from CDN-specific headers
-5. **Badge Update** — Toolbar badge is updated with color-coded status
+5. **Badge Update** — Toolbar badge is updated with status text
 6. **Popup Display** — Clicking the icon shows detailed header information
 
 ## License

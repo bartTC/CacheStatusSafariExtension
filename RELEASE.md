@@ -148,14 +148,15 @@ You can build both versions for the same release:
 ```bash
 # Direct distribution (for GitHub)
 just release v0.0.6
+just dmg v0.0.6
 
 # App Store (for Mac App Store)
 just release-appstore v0.0.6
 ```
 
 They don't conflict — outputs go to separate directories:
-- `build/v0.0.6/` — Developer ID build
-- `build/v0.0.6-appstore/` — App Store build
+- `build/v0.0.6/` — Developer ID build (`.zip` and `.dmg`)
+- `build/v0.0.6-appstore/` — App Store build (`.pkg`)
 
 ---
 

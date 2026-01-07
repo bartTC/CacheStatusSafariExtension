@@ -113,11 +113,13 @@ upload-appstore version="":
 validate-appstore version="":
     #!/usr/bin/env bash
     set -e
-    ver="${1:-}"
+    ver="{{version}}"
     [[ -z "$ver" && -f "{{build_dir}}/.current_version_appstore" ]] && ver=$(cat "{{build_dir}}/.current_version_appstore")
-    [[ -z "$ver" ]] && { echo "No version specified"; exit 1; }
-    pkg=$(find "{{build_dir}}/$ver/export" -name "*.pkg" -type f 2>/dev/null | head -1)
-    [[ -z "$pkg" ]] && { echo "No .pkg found for $ver"; exit 1; }
+    [[ -z "$ver" ]] && { echo "Error: No version specified"; exit 1; }
+    ver_dir="{{build_dir}}/${ver}-appstore"
+    [[ ! -d "$ver_dir" ]] && { echo "Error: App Store build not found at $ver_dir"; echo "Run 'just archive-appstore $ver' first."; exit 1; }
+    pkg=$(find "$ver_dir/export" -name "*.pkg" -type f 2>/dev/null | head -1)
+    [[ -z "$pkg" ]] && { echo "Error: No .pkg found in $ver_dir/export"; exit 1; }
     echo "Validating: $pkg"
     xcrun altool --validate-app -f "$pkg" --type macos --apple-id "$APPLE_ID" --password "$APPLE_APP_PASSWORD"
 

@@ -8,6 +8,12 @@ A Safari extension that displays CDN cache status (HIT/MISS) for the current pag
 ![Manifest V3](https://img.shields.io/badge/Manifest-V3-green)
 ![License MIT](https://img.shields.io/badge/License-MIT-yellow)
 
+## Download
+
+Download the latest release from [GitHub Releases](https://github.com/bartTC/CacheStatusSafariExtension/releases/latest).
+
+After downloading, unzip and move the app to your Applications folder. On first launch, open Safari → Settings → Extensions and enable Cache Status.
+
 ## Features
 
 - **Toolbar Badge** — Color-coded cache status (HIT/MISS) visible at a glance
@@ -100,6 +106,7 @@ just xcode        # Open project in Xcode
 ## Release Process
 
 See [RELEASE.md](RELEASE.md) for the full release guide covering:
+
 - Direct distribution (GitHub) with notarization
 - Mac App Store submission
 

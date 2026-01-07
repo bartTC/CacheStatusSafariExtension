@@ -93,6 +93,10 @@ log id:
 builds:
     @ls -d {{build_dir}}/v* {{build_dir}}/dev 2>/dev/null | xargs -I{} basename {} | sort -V || echo "(none)"
 
+# Create DMG installer (requires create-dmg: brew install create-dmg)
+dmg version="":
+    ./scripts/create-dmg.sh {{version}}
+
 # =============================================================================
 # App Store (requires Apple Distribution certificate)
 # =============================================================================

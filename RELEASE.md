@@ -64,6 +64,9 @@ just wait
 
 # 5. Staple notarization ticket and create final zip
 just staple
+
+# 6. Create DMG installer (optional, requires: brew install create-dmg)
+just dmg v0.0.6
 ```
 
 ### Output
@@ -73,7 +76,8 @@ build/
 └── v0.0.6/
     ├── CacheStatus.xcarchive       # Xcode archive
     ├── CF Cache Status.app         # Signed app
-    ├── CF.Cache.Status.v0.0.6.zip  # Final notarized release
+    ├── CF.Cache.Status.v0.0.6.zip  # Final notarized release (for GitHub)
+    ├── CacheStatus-v0.0.6.dmg      # DMG installer (optional)
     └── .submission_id              # Notarization tracking
 ```
 
@@ -206,6 +210,7 @@ Before releasing a new version:
 4. [ ] Push tag: `git push origin v0.0.X`
 5. [ ] Build releases:
    - [ ] `just release v0.0.X` (direct)
+   - [ ] `just dmg v0.0.X` (optional DMG installer)
    - [ ] `just release-appstore v0.0.X` (App Store)
-6. [ ] Create GitHub release with the `.zip` file
+6. [ ] Create GitHub release with `.zip` (and optionally `.dmg`)
 7. [ ] Submit App Store version in App Store Connect

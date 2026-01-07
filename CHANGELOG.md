@@ -7,9 +7,13 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Privacy Policy document (PRIVACY.md)
 - DMG installer with drag-to-Applications window (`just dmg`)
+- Support for `x-cache-date` header
 
 ### Changed
 - App renamed from "CF Cache Status" to "Cache Status"
+
+### Fixed
+- `x-cache-status` header now displayed in popup (was captured but not shown)
 
 ## [v0.0.7] - 2026-01-05
 

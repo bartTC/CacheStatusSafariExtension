@@ -119,9 +119,10 @@ const CACHE_STATUS_RULES = {
 };
 
 // =============================================================================
-// Headers to Capture
+// Headers to Capture and Display
 // =============================================================================
 
+// All headers we care about - used for both capture (background.js) and display (popup.js)
 const TRACKED_HEADERS = [
   // Cloudflare
   'cf-cache-status', 'cf-ray', 'cf-pop',
@@ -134,21 +135,17 @@ const TRACKED_HEADERS = [
   // Bunny CDN
   'cdn-cache', 'cdn-pullzone', 'cdn-requestid',
   // Generic
-  'x-cache', 'x-cache-status', 'x-varnish', 'x-edge-location', 'via',
+  'x-cache', 'x-cache-status', 'x-cache-date', 'x-varnish', 'x-edge-location', 'via',
   // Standard cache headers
   'age', 'cache-control', 'expires', 'etag', 'last-modified', 'vary', 'pragma',
   // Response metadata
   'server', 'content-type'
 ];
 
-const CACHE_HEADERS = [
-  'x-cache', 'cf-cache-status', 'cdn-cache',
-  'x-amz-cf-pop', 'cf-pop', 'x-edge-location', 'x-served-by',
-  'age', 'expires', 'cache-control', 'etag', 'last-modified', 'vary', 'pragma',
-  'cf-ray', 'x-amz-cf-id', 'x-akamai-request-id', 'cdn-requestid', 'cdn-pullzone',
-  'x-cache-hits', 'x-timer', 'x-varnish'
-];
+// Headers shown in "Headers" section (all except response metadata)
+const CACHE_HEADERS = TRACKED_HEADERS.filter(h => !['server', 'content-type'].includes(h));
 
+// Headers shown in "Response" section
 const RESPONSE_HEADERS = ['server', 'content-type', 'via'];
 
 // =============================================================================

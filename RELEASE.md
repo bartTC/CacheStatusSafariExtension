@@ -139,6 +139,62 @@ For automated uploads, you can use API keys instead of Apple ID:
 
 Generate keys at: App Store Connect → Users and Access → Keys
 
+### App Store Connect Setup
+
+In [App Store Connect](https://appstoreconnect.apple.com), configure:
+
+| Field | Value |
+|-------|-------|
+| Privacy Policy URL | https://elephant.house/apps/safari-cache-status/privacy/ |
+| Support URL | https://elephant.house/apps/safari-cache-status/ |
+| Marketing URL | https://elephant.house/apps/safari-cache-status/ |
+| Category | Developer Tools |
+| Price | Free |
+
+Content for description, keywords, and review notes is in `assets/app_store.md`.
+
+### Screenshots
+
+**Required sizes** (at least one):
+
+| Size | Resolution | Display |
+|------|------------|---------|
+| Small | 1280 × 800 | MacBook Air 13" |
+| Medium | 1440 × 900 | MacBook Pro 13" |
+| Large | 2560 × 1600 | MacBook Pro 14" Retina |
+| XL | 2880 × 1800 | MacBook Pro 16" Retina |
+
+**Format:** PNG or JPEG, RGB, no alpha, no rounded corners
+
+**What to capture:**
+
+1. Safari with popup open showing HIT status
+2. Popup showing MISS with performance metrics
+3. Dark mode variant
+
+**How to capture:**
+
+```bash
+# Screenshot a window
+screencapture -w screenshot.png
+
+# Resize to App Store dimensions
+sips -z 1600 2560 screenshot.png --out screenshot-2560x1600.png
+```
+
+### Age Rating
+
+| Question | Answer |
+|----------|--------|
+| Unrestricted Web Access | Yes |
+| Everything else | None |
+
+**Result:** Rated 4+
+
+### Export Compliance
+
+Uses encryption? **No** (HTTPS is exempt)
+
 ---
 
 ## Building Both

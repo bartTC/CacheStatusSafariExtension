@@ -4,6 +4,12 @@ What's new in each version of Cache Status.
 
 ---
 
+## Unreleased
+
+- Fixed Fastly cache diagram alignment
+
+---
+
 ## Version 0.0.9
 
 - Badge now shows full "MISS" instead of "MIS"

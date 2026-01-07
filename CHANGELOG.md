@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- Fastly tiered cache diagram arrow alignment in popup
+
+## [v0.0.9] - 2026-01-07
+
 ### Added
 - Detection of Safari limitation for bookmarks and external links
 - "Reload Required" message when headers unavailable (with explanation)

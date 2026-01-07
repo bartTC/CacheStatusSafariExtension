@@ -142,10 +142,10 @@ const TRACKED_HEADERS = [
   'server', 'content-type'
 ];
 
-// Headers shown in "Headers" section (all except response metadata)
+// Cache-related headers (shown first in popup)
 const CACHE_HEADERS = TRACKED_HEADERS.filter(h => !['server', 'content-type'].includes(h));
 
-// Headers shown in "Response" section
+// Response metadata headers (shown after cache headers)
 const RESPONSE_HEADERS = ['server', 'content-type', 'via'];
 
 // =============================================================================

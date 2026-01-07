@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - Privacy Policy document (PRIVACY.md)
+- DMG installer with drag-to-Applications window (`just dmg`)
 
 ### Changed
 - App renamed from "CF Cache Status" to "Cache Status"

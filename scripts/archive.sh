@@ -5,9 +5,7 @@ set -e
 # Usage: ./scripts/archive.sh [tag]
 # If a tag is provided, checks out that tag first, builds, then returns
 
-PROJECT="CF Cache Status/CF Cache Status.xcodeproj"
-SCHEME="CF Cache Status"
-BUILD_DIR="${BUILD_DIR:-build}"
+source "$(dirname "$0")/config.sh"
 
 tag="${1:-}"
 original_ref=""
@@ -74,4 +72,4 @@ xcodebuild -exportArchive \
 
 echo "$ver" > "$BUILD_DIR/.current_version"
 
-echo "✓ Archive complete: $export_path/CF Cache Status.app"
+echo "✓ Archive complete: $export_path/$APP_NAME.app"

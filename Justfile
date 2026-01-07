@@ -72,14 +72,17 @@ wait id="":
 staple version="":
     ./scripts/staple.sh {{version}}
 
-# Full release pipeline: archive, submit, wait, staple
+# Release pipeline: archive and submit for notarization
 release tag="":
     #!/usr/bin/env bash
     set -e
     just archive {{tag}}
     just submit
-    just wait
-    just staple
+    echo ""
+    echo "Submitted for notarization. Next steps:"
+    echo "  just status              # Check notarization status"
+    echo "  just staple              # Staple after approval"
+    echo "  just dmg                 # Create DMG installer"
 
 # Show notarization history
 history:

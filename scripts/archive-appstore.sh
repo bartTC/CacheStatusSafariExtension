@@ -4,9 +4,7 @@ set -e
 # Build and archive for Mac App Store distribution
 # Usage: ./scripts/archive-appstore.sh [tag]
 
-PROJECT="CF Cache Status/CF Cache Status.xcodeproj"
-SCHEME="CF Cache Status"
-BUILD_DIR="${BUILD_DIR:-build}"
+source "$(dirname "$0")/config.sh"
 
 tag="${1:-}"
 original_ref=""

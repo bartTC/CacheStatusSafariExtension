@@ -4,7 +4,7 @@ set -e
 # Submit app for notarization
 # Usage: ./scripts/submit.sh [version]
 
-BUILD_DIR="${BUILD_DIR:-build}"
+source "$(dirname "$0")/config.sh"
 
 if [[ -n "$1" ]]; then
     ver="$1"
@@ -15,7 +15,7 @@ else
 fi
 
 ver_dir="$BUILD_DIR/$ver"
-app_path="$ver_dir/export/CF Cache Status.app"
+app_path="$ver_dir/export/$APP_NAME.app"
 zip_path="$ver_dir/CacheStatus-$ver.zip"
 
 if [[ ! -d "$app_path" ]]; then

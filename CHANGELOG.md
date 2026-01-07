@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- Release scripts now use shared `config.sh` for app name and paths
+- `just release` no longer waits for notarization (async workflow)
+
 ## [v0.0.8] - 2026-01-07
 
 ### Added

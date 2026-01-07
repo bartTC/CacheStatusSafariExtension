@@ -4,7 +4,7 @@ set -e
 # Create DMG installer with drag-to-Applications window
 # Usage: ./scripts/create-dmg.sh [version]
 
-BUILD_DIR="${BUILD_DIR:-build}"
+source "$(dirname "$0")/config.sh"
 
 if [[ -n "$1" ]]; then
     ver="$1"
@@ -16,7 +16,7 @@ else
 fi
 
 ver_dir="$BUILD_DIR/$ver"
-app_path="$ver_dir/export/CF Cache Status.app"
+app_path="$ver_dir/export/$APP_NAME.app"
 dmg_path="$ver_dir/CacheStatus-$ver.dmg"
 
 if [[ ! -d "$app_path" ]]; then
@@ -46,15 +46,15 @@ BACKGROUND="$SCRIPT_DIR/../assets/dmg-background.png"
 #   └──────────────────────────────────────────────┘
 
 create-dmg \
-    --volname "Cache Status" \
+    --volname "$APP_NAME" \
     --volicon "$app_path/Contents/Resources/AppIcon.icns" \
     --background "$BACKGROUND" \
     --window-pos 200 120 \
     --window-size 600 400 \
     --icon-size 100 \
-    --icon "CF Cache Status.app" 150 125 \
+    --icon "$APP_NAME.app" 150 125 \
     --app-drop-link 450 125 \
-    --hide-extension "CF Cache Status.app" \
+    --hide-extension "$APP_NAME.app" \
     "$dmg_path" \
     "$app_path"
 

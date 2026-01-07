@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.0.8] - 2026-01-07
+
 ### Added
 - Privacy Policy document (PRIVACY.md)
 - DMG installer with drag-to-Applications window (`just dmg`)

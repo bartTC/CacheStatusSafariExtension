@@ -5,9 +5,6 @@
  * the toolbar badge with the cache status (HIT/MISS/etc).
  */
 
-// Import shared constants (loaded via manifest.json)
-// Uses: TRACKED_HEADERS, STATUS_COLORS, detectCDN, parseCacheStatus
-
 // =============================================================================
 // State Management
 // =============================================================================
@@ -15,16 +12,53 @@
 /** Stores cache header data per tab ID */
 const tabData = new Map();
 
-/** Tracks tabs with pending navigations to capture only the first main request */
-const pendingNavigations = new Set();
-
-/** Connected popup ports, keyed by tab ID they're watching */
+/** Connected popup ports */
 const popupPorts = new Map();
 
-/**
- * Notifies the popup if one is connected and watching this tab.
- * @param {number} tabId - Tab ID that was updated
- */
+/** Track pending navigations to detect missing headers (Safari limitation workaround) */
+const pendingNavigations = new Map();
+
+// =============================================================================
+// Badge Management
+// =============================================================================
+
+function updateBadge(tabId, status) {
+  const badgeTextMap = {
+    'HIT': 'HIT',
+    'MISS': 'MISS',
+    'EXPIRED': 'EXP',
+    'STALE': 'STALE',
+    'REVALIDATED': 'REV',
+    'BYPASS': 'BYP',
+    'DYNAMIC': 'DYN',
+    'REFRESH': 'REF',
+    'ERROR': 'ERR'
+  };
+  const badgeText = status ? (badgeTextMap[status.toUpperCase()] || status) : '';
+  const color = status === 'HIT' ? '#34C759' : status === 'MISS' ? '#FF3B30' : '#8E8E93';
+
+  browser.action.setBadgeText({ text: badgeText });
+  browser.action.setBadgeBackgroundColor({ color });
+
+  try {
+    browser.action.setBadgeText({ text: badgeText, tabId });
+    browser.action.setBadgeBackgroundColor({ color, tabId });
+  } catch (e) {
+    // Per-tab badges not supported
+  }
+}
+
+function clearBadge(tabId) {
+  browser.action.setBadgeText({ text: '' });
+  try {
+    browser.action.setBadgeText({ text: '', tabId });
+  } catch (e) {}
+}
+
+// =============================================================================
+// Popup Communication
+// =============================================================================
+
 function notifyPopup(tabId) {
   const port = popupPorts.get(tabId);
   if (port) {
@@ -33,125 +67,152 @@ function notifyPopup(tabId) {
 }
 
 // =============================================================================
-// Badge Management
-// =============================================================================
-
-/**
- * Updates the toolbar badge text and color for a tab.
- * @param {number} tabId - Browser tab ID
- * @param {string|null} status - Cache status (HIT, MISS, etc.)
- * @param {string|null} cdn - CDN identifier
- */
-function updateBadge(tabId, status, cdn) {
-  const displayStatus = status || 'NONE';
-  const colors = STATUS_COLORS[displayStatus] || STATUS_COLORS['NONE'];
-
-  const badgeTextMap = {
-    'HIT': 'HIT', 'MISS': 'MISS', 'EXPIRED': 'EXP', 'STALE': 'STL',
-    'REVALIDATED': 'REV', 'BYPASS': 'BYP', 'DYNAMIC': 'DYN',
-    'REFRESH': 'REF', 'ERROR': 'ERR'
-  };
-  const badgeText = status ? (badgeTextMap[status] || status.substring(0, 3)) : '';
-
-  browser.action.setBadgeText({ text: badgeText });
-  browser.action.setBadgeBackgroundColor({ color: colors.badge });
-
-  try {
-    browser.action.setBadgeText({ text: badgeText, tabId });
-    browser.action.setBadgeBackgroundColor({ color: colors.badge, tabId });
-  } catch (e) {
-    // Per-tab badges not supported
-  }
-}
-
-/**
- * Clears the badge for a tab.
- * @param {number} tabId - Browser tab ID
- */
-function clearBadge(tabId) {
-  browser.action.setBadgeText({ text: '' });
-  try {
-    browser.action.setBadgeText({ text: '', tabId });
-  } catch (e) {
-    // Per-tab badges not supported
-  }
-}
-
-// =============================================================================
 // Event Listeners
 // =============================================================================
 
-// Track navigation start to capture only the first main document request
+// --- Web Navigation Events ---
+
 browser.webNavigation.onBeforeNavigate.addListener((details) => {
   if (details.frameId === 0) {
-    pendingNavigations.add(details.tabId);
     tabData.delete(details.tabId);
+    clearBadge(details.tabId);
+    notifyPopup(details.tabId);
+
+    // Track navigation to detect Safari limitation where webRequest events don't fire
+    pendingNavigations.set(details.tabId, {
+      url: details.url,
+      timestamp: Date.now(),
+      headersReceived: false
+    });
   }
 });
 
-// Update URL after navigation completes (handles redirects)
 browser.webNavigation.onCompleted.addListener((details) => {
   if (details.frameId === 0) {
     const data = tabData.get(details.tabId);
+    const pending = pendingNavigations.get(details.tabId);
+
+    // Check if we never received headers (Safari limitation with external links/bookmarks)
+    if (pending && !pending.headersReceived) {
+      const existingData = tabData.get(details.tabId);
+      if (existingData) {
+        existingData.noHeaders = true;
+        existingData.url = details.url;
+      } else {
+        tabData.set(details.tabId, {
+          url: details.url,
+          headers: {},
+          status: null,
+          cdn: null,
+          timestamp: Date.now(),
+          noHeaders: true
+        });
+      }
+
+      // Show reload badge
+      browser.action.setBadgeText({ text: 'RLD' });
+      browser.action.setBadgeBackgroundColor({ color: '#8E8E93' });
+      try {
+        browser.action.setBadgeText({ text: 'RLD', tabId: details.tabId });
+        browser.action.setBadgeBackgroundColor({ color: '#8E8E93', tabId: details.tabId });
+      } catch (e) {}
+
+      notifyPopup(details.tabId);
+    }
+
+    // Update URL if we have data (handles redirects)
     if (data && data.url !== details.url) {
       data.url = details.url;
     }
+
+    pendingNavigations.delete(details.tabId);
   }
 });
 
-// Capture response headers for main document requests
+// --- Web Request Events ---
+
+/**
+ * Process response headers from a main frame request.
+ * Called by both onHeadersReceived and onResponseStarted (Safari fallback).
+ */
+function processMainFrameHeaders(details) {
+  // Mark navigation as having received headers (for Safari limitation detection)
+  const pendingNav = pendingNavigations.get(details.tabId);
+  if (pendingNav) {
+    pendingNav.headersReceived = true;
+  }
+
+  // Extract tracked headers
+  const headers = {};
+  for (const header of details.responseHeaders || []) {
+    const name = header.name.toLowerCase();
+    if (TRACKED_HEADERS.includes(name)) {
+      headers[name] = header.value;
+    }
+  }
+
+  // Detect CDN and parse status
+  const cdn = detectCDN(headers);
+  const status = parseCacheStatus(headers, cdn);
+
+  // Store data
+  tabData.set(details.tabId, {
+    url: details.url,
+    headers,
+    status,
+    cdn,
+    timestamp: Date.now()
+  });
+
+  updateBadge(details.tabId, status);
+  notifyPopup(details.tabId);
+}
+
 browser.webRequest.onHeadersReceived.addListener(
   (details) => {
-    if (details.type !== 'main_frame' || details.frameId !== 0) return;
-    if (!pendingNavigations.has(details.tabId)) return;
-
-    pendingNavigations.delete(details.tabId);
-
-    // Extract tracked headers
-    const headers = {};
-    for (const header of details.responseHeaders || []) {
-      const name = header.name.toLowerCase();
-      if (TRACKED_HEADERS.includes(name)) {
-        headers[name] = header.value;
-      }
+    if (details.type === 'main_frame' && details.frameId === 0) {
+      processMainFrameHeaders(details);
     }
-
-    // Detect CDN and parse status using shared functions
-    const cdn = detectCDN(headers);
-    const status = parseCacheStatus(headers, cdn);
-
-    tabData.set(details.tabId, {
-      url: details.url,
-      headers,
-      status,
-      cdn,
-      timestamp: Date.now()
-    });
-
-    updateBadge(details.tabId, status, cdn);
-    notifyPopup(details.tabId);
   },
   { urls: ['<all_urls>'] },
   ['responseHeaders']
 );
 
-// Clean up data when tab closes
+// Safari fallback: onResponseStarted sometimes fires when onHeadersReceived doesn't
+browser.webRequest.onResponseStarted.addListener(
+  (details) => {
+    if (details.type !== 'main_frame' || details.frameId !== 0) {
+      return;
+    }
+
+    const pendingNav = pendingNavigations.get(details.tabId);
+    if (pendingNav && !pendingNav.headersReceived) {
+      processMainFrameHeaders(details);
+    }
+  },
+  { urls: ['<all_urls>'] },
+  ['responseHeaders']
+);
+
+// --- Tab Events ---
+
 browser.tabs.onRemoved.addListener((tabId) => {
   tabData.delete(tabId);
+  popupPorts.delete(tabId);
   pendingNavigations.delete(tabId);
 });
 
-// Update badge when switching tabs
 browser.tabs.onActivated.addListener((activeInfo) => {
   const data = tabData.get(activeInfo.tabId);
   if (data) {
-    updateBadge(activeInfo.tabId, data.status, data.cdn);
+    updateBadge(activeInfo.tabId, data.status);
   } else {
     clearBadge(activeInfo.tabId);
   }
 });
 
-// Update badge when window focus changes
+// --- Window Events ---
+
 browser.windows.onFocusChanged.addListener(async (windowId) => {
   if (windowId === browser.windows.WINDOW_ID_NONE) return;
 
@@ -160,7 +221,7 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
     if (tabs?.[0]) {
       const data = tabData.get(tabs[0].id);
       if (data) {
-        updateBadge(tabs[0].id, data.status, data.cdn);
+        updateBadge(tabs[0].id, data.status);
       } else {
         clearBadge(tabs[0].id);
       }
@@ -170,7 +231,8 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
   }
 });
 
-// Handle messages from popup and content scripts
+// --- Message Handling ---
+
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'getTabData') {
     sendResponse(tabData.get(message.tabId) || null);
@@ -196,20 +258,19 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return true;
 });
 
-// Handle popup connections for reactive updates
+// --- Popup Port Connection ---
+
 browser.runtime.onConnect.addListener((port) => {
   if (port.name !== 'popup') return;
 
   port.onMessage.addListener((msg) => {
     if (msg.type === 'subscribe' && msg.tabId) {
       popupPorts.set(msg.tabId, port);
-      // Send initial data immediately
       port.postMessage({ type: 'update', data: tabData.get(msg.tabId) || null });
     }
   });
 
   port.onDisconnect.addListener(() => {
-    // Remove port from map when popup closes
     for (const [tabId, p] of popupPorts) {
       if (p === port) {
         popupPorts.delete(tabId);

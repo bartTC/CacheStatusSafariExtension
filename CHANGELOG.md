@@ -4,7 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- Detection of Safari limitation for bookmarks and external links
+- "Reload Required" message when headers unavailable (with explanation)
+- "RLD" badge indicator when reload is needed
+- KNOWN_ISSUES.md documenting Safari webRequest API limitations
+
 ### Changed
+- Badge now shows full "MISS" instead of truncated "MIS"
 - Release scripts now use shared `config.sh` for app name and paths
 - `just release` no longer waits for notarization (async workflow)
 - Version and build number now auto-derived from git tag and commit count

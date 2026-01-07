@@ -4,6 +4,14 @@ What's new in each version of Cache Status.
 
 ---
 
+## Version 0.0.9
+
+- Badge now shows full "MISS" instead of "MIS"
+- Added "Reload Required" indicator for pages opened from bookmarks or external apps
+- Safari cannot capture headers for these navigations - simply reload to see cache status
+
+---
+
 ## Version 0.0.8
 
 - Fixed: `x-cache-status` header now displayed (used by nginx and other servers)

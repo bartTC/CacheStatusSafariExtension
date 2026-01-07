@@ -1,6 +1,6 @@
 /**
  * Cache Status - Popup Script
- * 
+ *
  * macOS Native Inspector Design
  * Features: Dark Mode support, Dynamic Grid, Full Stats.
  */
@@ -26,10 +26,15 @@ function updateUI(data) {
     const statusType = getStatusType(data.status);
     const subtitle = (STATUS_DESCRIPTIONS[data.status.toUpperCase()] || `${cdnName} detected`)
       .replace('{cdn}', cdnName);
-    
+
     renderHero(data.status, subtitle, statusType);
   } else if (hasHeaders) {
     renderHero('N/A', 'No cache status detected', 'neutral');
+  } else if (data?.noHeaders) {
+    // Safari doesn't provide headers for external links/bookmarks
+    renderHero('Reload Required', 'Safari does not expose headers for pages opened from bookmarks or external apps. Reload the page to capture cache status.', 'neutral');
+    hideAllSections();
+    return;
   } else {
     renderHero('No Data', 'Navigate or reload to capture headers', 'neutral');
     hideAllSections();
@@ -301,7 +306,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     });
 
-    // Subscribe to updates for this tab (also triggers initial data send)
     port.postMessage({ type: 'subscribe', tabId: tabs[0].id });
   } catch (error) {
     console.error('Error connecting:', error);

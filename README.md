@@ -1,12 +1,12 @@
+![Safari Extension](https://img.shields.io/badge/Safari-Extension-blue)
+![Manifest V3](https://img.shields.io/badge/Manifest-V3-green)
+![License MIT](https://img.shields.io/badge/License-MIT-yellow)
+
 # Cache Status
 
 A Safari extension that displays CDN cache status (HIT/MISS) for the current page with detailed header information.
 
 ![Screenshot](screenshot.jpg)
-
-![Safari Extension](https://img.shields.io/badge/Safari-Extension-blue)
-![Manifest V3](https://img.shields.io/badge/Manifest-V3-green)
-![License MIT](https://img.shields.io/badge/License-MIT-yellow)
 
 ## Download
 

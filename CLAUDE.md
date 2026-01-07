@@ -22,9 +22,25 @@ Tests are in `tests/cdn-detection.test.js` and validate all CDN detection rules 
 
 ## Release Process
 
+### Pre-release Checklist
+
+Before starting a release, confirm with the user:
+
+1. **Version number** — What tag? (e.g., v0.0.9)
+2. **Uncommitted changes** — Should they be committed first?
+3. **CHANGELOG.md** — Is it updated with technical changes?
+4. **RELEASE_NOTES.md** — Is it updated with user-facing changes?
+5. **Target** — GitHub only, App Store only, or both?
+6. **Tests pass** — Run `just test` before proceeding
+
 ### Direct Distribution (GitHub)
 
 ```bash
+# 1. Update docs
+#    - CHANGELOG.md (technical changes)
+#    - RELEASE_NOTES.md (user-facing changes)
+
+# 2. Tag and release
 git tag v0.0.X
 git push origin v0.0.X
 just release v0.0.X        # Archive and submit for notarization

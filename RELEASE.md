@@ -205,13 +205,15 @@ Both require the private key to be present.
 
 Before releasing a new version:
 
-1. [ ] Update version in Xcode (both targets)
-2. [ ] Update `CHANGELOG.md`
-3. [ ] Create git tag: `git tag v0.0.X`
-4. [ ] Push tag: `git push origin v0.0.X`
-5. [ ] Build releases:
+1. [ ] Update `CHANGELOG.md`
+2. [ ] Create git tag: `git tag v0.0.X`
+3. [ ] Push tag: `git push origin v0.0.X`
+4. [ ] Build releases:
    - [ ] `just release v0.0.X` (direct)
    - [ ] `just dmg v0.0.X` (optional DMG installer)
    - [ ] `just release-appstore v0.0.X` (App Store)
-6. [ ] Create GitHub release with `.zip` (and optionally `.dmg`)
-7. [ ] Submit App Store version in App Store Connect
+5. [ ] Create GitHub release with `.zip` (and optionally `.dmg`)
+6. [ ] Submit App Store version in App Store Connect
+
+> **Note:** Version and build number are automatically set from the git tag.
+> `v0.0.8` → MARKETING_VERSION=0.0.8, BUILD=(commit count)

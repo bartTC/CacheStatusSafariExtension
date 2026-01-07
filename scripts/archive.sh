@@ -38,6 +38,17 @@ trap cleanup EXIT
 
 echo "Building version: $ver"
 
+# Derive marketing version and build number from git
+marketing_version="${ver#v}"  # v0.0.8 → 0.0.8
+build_number=$(git rev-list --count HEAD)
+
+echo "Setting MARKETING_VERSION=$marketing_version, BUILD=$build_number"
+
+# Update Xcode project with version info
+project_file="$PROJECT/project.pbxproj"
+sed -i '' "s/MARKETING_VERSION = [^;]*;/MARKETING_VERSION = $marketing_version;/g" "$project_file"
+sed -i '' "s/CURRENT_PROJECT_VERSION = [^;]*;/CURRENT_PROJECT_VERSION = $build_number;/g" "$project_file"
+
 ver_dir="$BUILD_DIR/$ver"
 archive_path="$ver_dir/CacheStatus.xcarchive"
 export_path="$ver_dir/export"

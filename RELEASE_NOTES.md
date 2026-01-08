@@ -6,6 +6,8 @@ What's new in each version of Cache Status.
 
 ## Unreleased
 
+- Fixed toolbar icon being tinted with system accent color
+
 ---
 
 ## Version 0.0.10

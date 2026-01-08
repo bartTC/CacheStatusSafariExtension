@@ -24,7 +24,7 @@ struct ContentView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Image("ToolbarIcon")
+            Image("HeroIcon")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 72, height: 72)

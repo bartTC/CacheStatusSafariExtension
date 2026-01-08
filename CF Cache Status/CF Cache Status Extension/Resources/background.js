@@ -36,12 +36,40 @@ const ICONS = {
   }
 };
 
-/** Cached color scheme (updated by popup which has DOM access) */
+/** Cached color scheme (updated by native app or popup) */
 let cachedIsDark = false;
 
 function isDarkMode() {
   return cachedIsDark;
 }
+
+// Request appearance from native app on startup
+async function initializeAppearance() {
+  console.log('[CF Cache Status] initializeAppearance() called');
+  try {
+    console.log('[CF Cache Status] Sending native message to com.cfcachestatus.CF-Cache-Status');
+    const response = await browser.runtime.sendNativeMessage(
+      'com.cfcachestatus.CF-Cache-Status',
+      { type: 'getAppearance' }
+    );
+    console.log('[CF Cache Status] Native message response:', JSON.stringify(response));
+    if (response && typeof response.isDark === 'boolean') {
+      cachedIsDark = response.isDark;
+      console.log('[CF Cache Status] Set cachedIsDark to:', cachedIsDark);
+      const icon = getDefaultIcon();
+      console.log('[CF Cache Status] Setting icon to:', JSON.stringify(icon));
+      browser.action.setIcon({ path: icon });
+    } else {
+      console.log('[CF Cache Status] Invalid response format, isDark not found');
+    }
+  } catch (e) {
+    console.error('[CF Cache Status] Native messaging error:', e.message || e);
+  }
+}
+
+// Initialize appearance on extension load
+console.log('[CF Cache Status] Background script loaded at', new Date().toISOString());
+initializeAppearance();
 
 function getDefaultIcon() {
   return isDarkMode() ? ICONS.dark : ICONS.light;
@@ -85,6 +113,7 @@ function updateBadge(tabId, status) {
 
   // Reset to default icon (respects dark/light mode)
   const icon = getDefaultIcon();
+  console.log('[CF Cache Status] updateBadge called, tabId:', tabId, 'status:', status, 'cachedIsDark:', cachedIsDark, 'icon:', icon['16']);
   browser.action.setIcon({ path: icon });
   browser.action.setBadgeText({ text: badgeText });
   browser.action.setBadgeBackgroundColor({ color });
@@ -276,10 +305,15 @@ browser.tabs.onActivated.addListener((activeInfo) => {
 // --- Window Events ---
 
 browser.windows.onFocusChanged.addListener(async (windowId) => {
-  if (windowId === browser.windows.WINDOW_ID_NONE) return;
+  console.log('[CF Cache Status] onFocusChanged, windowId:', windowId, 'cachedIsDark:', cachedIsDark);
+  if (windowId === browser.windows.WINDOW_ID_NONE) {
+    console.log('[CF Cache Status] Window lost focus (WINDOW_ID_NONE), ignoring');
+    return;
+  }
 
   try {
     const tabs = await browser.tabs.query({ active: true, windowId });
+    console.log('[CF Cache Status] Active tab:', tabs?.[0]?.id, 'hasData:', tabData.has(tabs?.[0]?.id));
     if (tabs?.[0]) {
       const data = tabData.get(tabs[0].id);
       if (data) {
@@ -293,7 +327,7 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
       }
     }
   } catch (e) {
-    // Ignore errors during window switching
+    console.error('[CF Cache Status] onFocusChanged error:', e);
   }
 });
 
@@ -305,9 +339,12 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === 'colorScheme') {
+    console.log('[CF Cache Status] Received colorScheme message, isDark:', message.isDark, 'from:', sender.tab?.url || sender.url || 'popup');
     const changed = cachedIsDark !== message.isDark;
     cachedIsDark = message.isDark;
+    console.log('[CF Cache Status] cachedIsDark updated to:', cachedIsDark, 'changed:', changed);
     if (changed) {
+      console.log('[CF Cache Status] Updating all tab icons');
       updateAllTabIcons();
     }
   }

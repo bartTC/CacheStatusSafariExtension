@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- Dark mode toolbar icon now displays correctly on Safari launch (previously defaulted to light icon until popup was opened)
+
+### Added
+- Native messaging to detect system appearance on extension startup
+- Content script color scheme detection for live dark/light mode switching
+
 ## [v1.0.0] - 2026-01-08
 
 First stable release.

@@ -7,6 +7,11 @@
 
 import SafariServices
 import os.log
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
 
 class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
 
@@ -29,14 +34,39 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
 
         os_log(.default, "Received message from browser.runtime.sendNativeMessage: %@ (profile: %@)", String(describing: message), profile?.uuidString ?? "none")
 
-        let response = NSExtensionItem()
-        if #available(iOS 15.0, macOS 11.0, *) {
-            response.userInfo = [ SFExtensionMessageKey: [ "echo": message ] ]
+        // Handle appearance request
+        var responseData: [String: Any] = [:]
+
+        if let msg = message as? [String: Any], let type = msg["type"] as? String {
+            if type == "getAppearance" {
+                let isDark = Self.isDarkMode()
+                responseData = ["isDark": isDark]
+                os_log(.default, "Returning appearance: isDark = %{public}@", isDark ? "true" : "false")
+            } else {
+                responseData = ["echo": message as Any]
+            }
         } else {
-            response.userInfo = [ "message": [ "echo": message ] ]
+            responseData = ["echo": message as Any]
         }
 
-        context.completeRequest(returningItems: [ response ], completionHandler: nil)
+        let response = NSExtensionItem()
+        if #available(iOS 15.0, macOS 11.0, *) {
+            response.userInfo = [SFExtensionMessageKey: responseData]
+        } else {
+            response.userInfo = ["message": responseData]
+        }
+
+        context.completeRequest(returningItems: [response], completionHandler: nil)
+    }
+
+    /// Detect current system appearance (dark or light mode)
+    private static func isDarkMode() -> Bool {
+        #if os(macOS)
+        let appearance = NSApp?.effectiveAppearance ?? NSAppearance.currentDrawing()
+        return appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+        #else
+        return UITraitCollection.current.userInterfaceStyle == .dark
+        #endif
     }
 
 }

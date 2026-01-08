@@ -74,3 +74,32 @@ if (document.readyState === 'complete') {
     setTimeout(sendMetrics, 100);
   });
 }
+
+// =============================================================================
+// Color Scheme Detection
+// =============================================================================
+
+/**
+ * Sends the current color scheme to the background script.
+ * Content scripts have DOM access, so they can detect system appearance.
+ */
+function sendColorScheme() {
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  console.log('[CF Cache Status] Content script sending colorScheme, isDark:', isDark);
+  browser.runtime.sendMessage({
+    type: 'colorScheme',
+    isDark: isDark
+  }).catch((e) => {
+    console.log('[CF Cache Status] Content script colorScheme error:', e.message || e);
+  });
+}
+
+// Send color scheme on page load
+console.log('[CF Cache Status] Content script loaded');
+sendColorScheme();
+
+// Listen for color scheme changes (user toggles dark/light mode)
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  console.log('[CF Cache Status] Color scheme changed event, isDark:', e.matches);
+  sendColorScheme();
+});

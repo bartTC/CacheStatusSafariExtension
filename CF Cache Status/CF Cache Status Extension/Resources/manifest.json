@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Cache Status",
   "version": "1.0",
-  "description": "Shows CDN cache status (HIT/MISS) for the current page. Supports Cloudflare, CloudFront, Fastly, Akamai, and more.",
+  "description": "Shows CDN cache status (HIT/MISS) for the current page. Supports Cloudflare, CloudFront, Fastly, Akamai.",
   "icons": {
     "16": "images/app-icon-16.png",
     "32": "images/app-icon-32.png",

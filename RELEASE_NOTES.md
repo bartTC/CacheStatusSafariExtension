@@ -1,5 +1,9 @@
 # Release Notes
 
+## Version 1.0.1
+
+- Fixed: Dark mode toolbar icon now displays correctly when Safari launches in dark mode
+
 ## Version 1.0
 
 Initial release.

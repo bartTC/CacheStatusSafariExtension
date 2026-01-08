@@ -9,19 +9,47 @@
 // Icon Paths
 // =============================================================================
 
-const DEFAULT_ICON = {
-  16: 'images/icon-16.png',
-  32: 'images/icon-32.png',
-  48: 'images/icon-48.png',
-  128: 'images/icon-128.png'
+const ICONS = {
+  light: {
+    16: 'images/icon-light-16.png',
+    32: 'images/icon-light-32.png',
+    48: 'images/icon-light-48.png',
+    128: 'images/icon-light-128.png'
+  },
+  dark: {
+    16: 'images/icon-dark-16.png',
+    32: 'images/icon-dark-32.png',
+    48: 'images/icon-dark-48.png',
+    128: 'images/icon-dark-128.png'
+  },
+  pendingLight: {
+    16: 'images/icon-pending-light-16.png',
+    32: 'images/icon-pending-light-32.png',
+    48: 'images/icon-pending-light-48.png',
+    128: 'images/icon-pending-light-128.png'
+  },
+  pendingDark: {
+    16: 'images/icon-pending-dark-16.png',
+    32: 'images/icon-pending-dark-32.png',
+    48: 'images/icon-pending-dark-48.png',
+    128: 'images/icon-pending-dark-128.png'
+  }
 };
 
-const PENDING_ICON = {
-  16: 'images/icon-pending-16.png',
-  32: 'images/icon-pending-32.png',
-  48: 'images/icon-pending-48.png',
-  128: 'images/icon-pending-128.png'
-};
+/** Cached color scheme (updated by popup which has DOM access) */
+let cachedIsDark = false;
+
+function isDarkMode() {
+  return cachedIsDark;
+}
+
+function getDefaultIcon() {
+  return isDarkMode() ? ICONS.dark : ICONS.light;
+}
+
+function getPendingIcon() {
+  return isDarkMode() ? ICONS.pendingDark : ICONS.pendingLight;
+}
 
 // =============================================================================
 // State Management
@@ -55,13 +83,14 @@ function updateBadge(tabId, status) {
   const badgeText = status ? (badgeTextMap[status.toUpperCase()] || status) : '';
   const color = status === 'HIT' ? '#34C759' : status === 'MISS' ? '#FF3B30' : '#8E8E93';
 
-  // Reset to default icon
-  browser.action.setIcon({ path: DEFAULT_ICON });
+  // Reset to default icon (respects dark/light mode)
+  const icon = getDefaultIcon();
+  browser.action.setIcon({ path: icon });
   browser.action.setBadgeText({ text: badgeText });
   browser.action.setBadgeBackgroundColor({ color });
 
   try {
-    browser.action.setIcon({ path: DEFAULT_ICON, tabId });
+    browser.action.setIcon({ path: icon, tabId });
     browser.action.setBadgeText({ text: badgeText, tabId });
     browser.action.setBadgeBackgroundColor({ color, tabId });
   } catch (e) {
@@ -70,19 +99,21 @@ function updateBadge(tabId, status) {
 }
 
 function clearBadge(tabId) {
-  browser.action.setIcon({ path: DEFAULT_ICON });
+  const icon = getDefaultIcon();
+  browser.action.setIcon({ path: icon });
   browser.action.setBadgeText({ text: '' });
   try {
-    browser.action.setIcon({ path: DEFAULT_ICON, tabId });
+    browser.action.setIcon({ path: icon, tabId });
     browser.action.setBadgeText({ text: '', tabId });
   } catch (e) {}
 }
 
 function showPendingIcon(tabId) {
-  browser.action.setIcon({ path: PENDING_ICON });
+  const icon = getPendingIcon();
+  browser.action.setIcon({ path: icon });
   browser.action.setBadgeText({ text: '' });
   try {
-    browser.action.setIcon({ path: PENDING_ICON, tabId });
+    browser.action.setIcon({ path: icon, tabId });
     browser.action.setBadgeText({ text: '', tabId });
   } catch (e) {}
 }
@@ -273,6 +304,14 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse(tabData.get(message.tabId) || null);
   }
 
+  if (message.type === 'colorScheme') {
+    const changed = cachedIsDark !== message.isDark;
+    cachedIsDark = message.isDark;
+    if (changed) {
+      updateAllTabIcons();
+    }
+  }
+
   if (message.type === 'performanceData' && sender.tab) {
     const existing = tabData.get(sender.tab.id);
     if (existing) {
@@ -314,3 +353,28 @@ browser.runtime.onConnect.addListener((port) => {
     }
   });
 });
+
+// --- Color Scheme Handling ---
+
+async function updateAllTabIcons() {
+  try {
+    const tabs = await browser.tabs.query({});
+    for (const tab of tabs) {
+      const data = tabData.get(tab.id);
+      if (data) {
+        if (data.noHeaders) {
+          showPendingIcon(tab.id);
+        } else {
+          updateBadge(tab.id, data.status);
+        }
+      }
+    }
+    // Also update the default icon for tabs without data
+    browser.action.setIcon({ path: getDefaultIcon() });
+  } catch (e) {
+    // Ignore errors
+  }
+}
+
+// Note: Color scheme detection happens via popup.js which has DOM access.
+// The popup sends a 'colorScheme' message when opened, updating cachedIsDark.

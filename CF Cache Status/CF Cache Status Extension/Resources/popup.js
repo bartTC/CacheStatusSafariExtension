@@ -298,6 +298,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const tabs = await browser.tabs.query({ active: true, currentWindow: true });
     if (!tabs?.length) return;
 
+    // Inform background of current color scheme (popup has proper DOM access)
+    const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    browser.runtime.sendMessage({ type: 'colorScheme', isDark });
+
     const port = browser.runtime.connect({ name: 'popup' });
 
     port.onMessage.addListener((msg) => {

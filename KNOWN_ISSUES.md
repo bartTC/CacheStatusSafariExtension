@@ -37,3 +37,16 @@ Safari's webRequest API has several known misalignments with Chrome and Firefox:
 ### Reporting to Apple
 
 If you encounter this issue, consider filing a bug report via [Apple Feedback Assistant](https://feedbackassistant.apple.com) to help prioritize a fix.
+
+## Dark Mode Icon Switching
+
+**Issue:** The toolbar icon does not automatically switch between light and dark variants when the system appearance changes.
+
+**Cause:** Safari extension background scripts do not have access to `window.matchMedia`, so the extension cannot detect color scheme changes directly. The color scheme is detected via the popup, which has proper DOM access.
+
+**Workaround:** Click the extension icon once after switching between light and dark mode. The icon will update to the correct variant.
+
+**Technical Details:**
+- Background scripts in Safari run in a limited environment without full DOM access
+- The popup detects the color scheme and sends it to the background script
+- Icons are updated when the popup is opened or when tab data changes

@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- Dark mode support for toolbar icons (light/dark variants switch based on system appearance)
+
 ### Changed
 - "Reload Required" state now uses a dedicated icon (cloud with question mark) instead of "RLD" text badge
 - App icon now uses Xcode Icon Composer format (.icon) with layered composition
+- Toolbar icons now use colored pixels to prevent Safari's accent color tinting
 - Renamed internal ToolbarIcon asset to HeroIcon for clarity
 - Moved toolbar icon SVG source to `assets/toolbarIcon.svg`
 

@@ -6,6 +6,10 @@ What's new in each version of Cache Status.
 
 ## Unreleased
 
+---
+
+## Version 0.0.10
+
 - Toolbar icon now adapts to light/dark mode (black icon in light mode, white in dark mode)
 - "Reload Required" state now shows a cloud with question mark icon instead of text badge
 - Fixed Fastly cache diagram alignment

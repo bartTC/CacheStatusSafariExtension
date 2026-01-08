@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [v0.0.10] - 2026-01-08
+
 ### Added
 - Dark mode support for toolbar icons (light/dark variants switch based on system appearance)
 

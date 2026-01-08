@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5B0588CA2F08CB540004883F /* content.js in Resources */ = {isa = PBXBuildFile; fileRef = 5B0588C92F08CB540004883F /* content.js */; };
+		5B25BC572F0F6C6D00A74BB8 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 5B25BC562F0F6C6D00A74BB8 /* AppIcon.icon */; };
 		5B8F9F1E2F07E4C60092E4D0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B8F9F1D2F07E4C60092E4D0 /* Assets.xcassets */; };
 		5B8F9F252F07E4C60092E4D0 /* CF Cache Status Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5B8F9F242F07E4C60092E4D0 /* CF Cache Status Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5B8F9F2A2F07E4C60092E4D0 /* SafariWebExtensionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B8F9F292F07E4C60092E4D0 /* SafariWebExtensionHandler.swift */; };
@@ -48,10 +49,11 @@
 
 /* Begin PBXFileReference section */
 		5B0588C92F08CB540004883F /* content.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = content.js; sourceTree = "<group>"; };
-		5B8F9F092F07E4C50092E4D0 /* CF Cache Status.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CF Cache Status.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B25BC562F0F6C6D00A74BB8 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		5B8F9F092F07E4C50092E4D0 /* Cache Status.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cache Status.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B8F9F1D2F07E4C60092E4D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5B8F9F1F2F07E4C60092E4D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		5B8F9F242F07E4C60092E4D0 /* CF Cache Status Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "CF Cache Status Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B8F9F242F07E4C60092E4D0 /* CF Cache Status Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; name = "CF Cache Status Extension.appex"; path = "Cache Status Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B8F9F292F07E4C60092E4D0 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
 		5B8F9F2B2F07E4C60092E4D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5B8F9F362F07E4C70092E4D0 /* popup.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; name = popup.js; path = Resources/popup.js; sourceTree = "<group>"; };
@@ -95,7 +97,7 @@
 		5B8F9F0A2F07E4C50092E4D0 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5B8F9F092F07E4C50092E4D0 /* CF Cache Status.app */,
+				5B8F9F092F07E4C50092E4D0 /* Cache Status.app */,
 				5B8F9F242F07E4C60092E4D0 /* CF Cache Status Extension.appex */,
 			);
 			name = Products;
@@ -104,6 +106,7 @@
 		5B8F9F0B2F07E4C50092E4D0 /* CF Cache Status */ = {
 			isa = PBXGroup;
 			children = (
+				5B25BC562F0F6C6D00A74BB8 /* AppIcon.icon */,
 				5BSWIFTUI002F09A0000000001 /* CacheStatusApp.swift */,
 				5BSWIFTUI022F09A0000000001 /* ContentView.swift */,
 				5B8F9F1D2F07E4C60092E4D0 /* Assets.xcassets */,
@@ -159,7 +162,7 @@
 			packageProductDependencies = (
 			);
 			productName = "CF Cache Status";
-			productReference = 5B8F9F092F07E4C50092E4D0 /* CF Cache Status.app */;
+			productReference = 5B8F9F092F07E4C50092E4D0 /* Cache Status.app */;
 			productType = "com.apple.product-type.application";
 		};
 		5B8F9F232F07E4C60092E4D0 /* CF Cache Status Extension */ = {
@@ -225,6 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B8F9F1E2F07E4C60092E4D0 /* Assets.xcassets in Resources */,
+				5B25BC572F0F6C6D00A74BB8 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,6 +479,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 68;
@@ -514,6 +519,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 68;

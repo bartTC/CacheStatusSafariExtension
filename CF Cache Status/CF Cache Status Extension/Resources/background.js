@@ -6,6 +6,24 @@
  */
 
 // =============================================================================
+// Icon Paths
+// =============================================================================
+
+const DEFAULT_ICON = {
+  16: 'images/icon-16.png',
+  32: 'images/icon-32.png',
+  48: 'images/icon-48.png',
+  128: 'images/icon-128.png'
+};
+
+const PENDING_ICON = {
+  16: 'images/icon-pending-16.png',
+  32: 'images/icon-pending-32.png',
+  48: 'images/icon-pending-48.png',
+  128: 'images/icon-pending-128.png'
+};
+
+// =============================================================================
 // State Management
 // =============================================================================
 
@@ -37,10 +55,13 @@ function updateBadge(tabId, status) {
   const badgeText = status ? (badgeTextMap[status.toUpperCase()] || status) : '';
   const color = status === 'HIT' ? '#34C759' : status === 'MISS' ? '#FF3B30' : '#8E8E93';
 
+  // Reset to default icon
+  browser.action.setIcon({ path: DEFAULT_ICON });
   browser.action.setBadgeText({ text: badgeText });
   browser.action.setBadgeBackgroundColor({ color });
 
   try {
+    browser.action.setIcon({ path: DEFAULT_ICON, tabId });
     browser.action.setBadgeText({ text: badgeText, tabId });
     browser.action.setBadgeBackgroundColor({ color, tabId });
   } catch (e) {
@@ -49,8 +70,19 @@ function updateBadge(tabId, status) {
 }
 
 function clearBadge(tabId) {
+  browser.action.setIcon({ path: DEFAULT_ICON });
   browser.action.setBadgeText({ text: '' });
   try {
+    browser.action.setIcon({ path: DEFAULT_ICON, tabId });
+    browser.action.setBadgeText({ text: '', tabId });
+  } catch (e) {}
+}
+
+function showPendingIcon(tabId) {
+  browser.action.setIcon({ path: PENDING_ICON });
+  browser.action.setBadgeText({ text: '' });
+  try {
+    browser.action.setIcon({ path: PENDING_ICON, tabId });
     browser.action.setBadgeText({ text: '', tabId });
   } catch (e) {}
 }
@@ -109,13 +141,8 @@ browser.webNavigation.onCompleted.addListener((details) => {
         });
       }
 
-      // Show reload badge
-      browser.action.setBadgeText({ text: 'RLD' });
-      browser.action.setBadgeBackgroundColor({ color: '#8E8E93' });
-      try {
-        browser.action.setBadgeText({ text: 'RLD', tabId: details.tabId });
-        browser.action.setBadgeBackgroundColor({ color: '#8E8E93', tabId: details.tabId });
-      } catch (e) {}
+      // Show pending icon (cloud with question mark)
+      showPendingIcon(details.tabId);
 
       notifyPopup(details.tabId);
     }
@@ -205,7 +232,11 @@ browser.tabs.onRemoved.addListener((tabId) => {
 browser.tabs.onActivated.addListener((activeInfo) => {
   const data = tabData.get(activeInfo.tabId);
   if (data) {
-    updateBadge(activeInfo.tabId, data.status);
+    if (data.noHeaders) {
+      showPendingIcon(activeInfo.tabId);
+    } else {
+      updateBadge(activeInfo.tabId, data.status);
+    }
   } else {
     clearBadge(activeInfo.tabId);
   }
@@ -221,7 +252,11 @@ browser.windows.onFocusChanged.addListener(async (windowId) => {
     if (tabs?.[0]) {
       const data = tabData.get(tabs[0].id);
       if (data) {
-        updateBadge(tabs[0].id, data.status);
+        if (data.noHeaders) {
+          showPendingIcon(tabs[0].id);
+        } else {
+          updateBadge(tabs[0].id, data.status);
+        }
       } else {
         clearBadge(tabs[0].id);
       }

@@ -6,7 +6,9 @@ What's new in each version of Cache Status.
 
 ## Unreleased
 
+- "Reload Required" state now shows a cloud with question mark icon instead of text badge
 - Fixed Fastly cache diagram alignment
+- New app icon
 
 ---
 

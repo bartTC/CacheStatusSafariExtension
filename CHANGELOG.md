@@ -4,8 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- "Reload Required" state now uses a dedicated icon (cloud with question mark) instead of "RLD" text badge
+- App icon now uses Xcode Icon Composer format (.icon) with layered composition
+- Renamed internal ToolbarIcon asset to HeroIcon for clarity
+- Moved toolbar icon SVG source to `assets/toolbarIcon.svg`
+
 ### Fixed
 - Fastly tiered cache diagram arrow alignment in popup
+
+### Removed
+- Unused LargeIcon asset from Xcode project
 
 ## [v0.0.9] - 2026-01-07
 

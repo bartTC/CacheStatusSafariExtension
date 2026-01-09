@@ -6,7 +6,7 @@
 
 A Safari extension that displays CDN cache status (HIT/MISS) for the current page with detailed header information.
 
-![Screenshot](screenshot.jpg)
+![Screenshot](assets/screenshot-light.png)
 
 ## Download
 

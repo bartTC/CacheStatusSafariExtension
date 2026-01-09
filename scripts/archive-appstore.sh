@@ -60,34 +60,15 @@ xcodebuild archive \
     -scheme "$SCHEME" \
     -archivePath "$archive_path" \
     DEVELOPMENT_TEAM="$APPLE_TEAM_ID" \
-    CODE_SIGN_STYLE=Manual \
-    CODE_SIGN_IDENTITY="Apple Distribution"
-
-# Export options for App Store
-cat > "$ver_dir/ExportOptions.plist" << EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>method</key>
-    <string>app-store</string>
-    <key>teamID</key>
-    <string>$APPLE_TEAM_ID</string>
-    <key>destination</key>
-    <string>upload</string>
-    <key>signingStyle</key>
-    <string>manual</string>
-</dict>
-</plist>
-EOF
-
-xcodebuild -exportArchive \
-    -archivePath "$archive_path" \
-    -exportPath "$export_path" \
-    -exportOptionsPlist "$ver_dir/ExportOptions.plist"
+    CODE_SIGN_STYLE=Automatic
 
 echo "$ver-appstore" > "$BUILD_DIR/.current_version_appstore"
 
-echo "✓ App Store archive complete: $export_path/"
 echo ""
-echo "Next: Run 'just upload-appstore' to upload to App Store Connect"
+echo "✓ App Store archive complete: $archive_path"
+echo ""
+echo "Next steps (manual):"
+echo "  1. Open archive:  open $archive_path"
+echo "  2. In Xcode Organizer: Click 'Distribute App' → 'App Store Connect'"
+echo "  3. Follow the prompts to upload"
+echo "  4. Submit for review in App Store Connect"

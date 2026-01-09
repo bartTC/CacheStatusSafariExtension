@@ -104,31 +104,6 @@ dmg version="":
 # App Store (requires Apple Distribution certificate)
 # =============================================================================
 
-# Build and sign for App Store (optionally specify a tag)
-archive-appstore tag="":
-    ./scripts/archive-appstore.sh {{tag}}
-
-# Upload to App Store Connect
-upload-appstore version="":
-    ./scripts/upload-appstore.sh {{version}}
-
-# Validate App Store package (without uploading)
-validate-appstore version="":
-    #!/usr/bin/env bash
-    set -e
-    ver="{{version}}"
-    [[ -z "$ver" && -f "{{build_dir}}/.current_version_appstore" ]] && ver=$(cat "{{build_dir}}/.current_version_appstore")
-    [[ -z "$ver" ]] && { echo "Error: No version specified"; exit 1; }
-    ver_dir="{{build_dir}}/${ver}-appstore"
-    [[ ! -d "$ver_dir" ]] && { echo "Error: App Store build not found at $ver_dir"; echo "Run 'just archive-appstore $ver' first."; exit 1; }
-    pkg=$(find "$ver_dir/export" -name "*.pkg" -type f 2>/dev/null | head -1)
-    [[ -z "$pkg" ]] && { echo "Error: No .pkg found in $ver_dir/export"; exit 1; }
-    echo "Validating: $pkg"
-    xcrun altool --validate-app -f "$pkg" --type macos --apple-id "$APPLE_ID" --password "$APPLE_APP_PASSWORD"
-
-# Full App Store pipeline: archive, validate, upload
+# Build and sign for App Store, then upload manually via Xcode Organizer
 release-appstore tag="":
-    #!/usr/bin/env bash
-    set -e
-    just archive-appstore {{tag}}
-    just upload-appstore
+    ./scripts/archive-appstore.sh {{tag}}

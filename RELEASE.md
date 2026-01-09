@@ -95,49 +95,28 @@ just builds         # List available builds
 
 For publishing on the Mac App Store.
 
-### Full Pipeline
+### Build Archive
 
 ```bash
 just release-appstore v0.0.6
 ```
 
-This runs: archive-appstore → upload-appstore (with validation)
+This creates an Xcode archive ready for manual upload.
 
-### Step-by-Step
+### Upload via Xcode Organizer
 
-```bash
-# 1. Build and sign with Apple Distribution
-just archive-appstore v0.0.6
-
-# 2. Validate package (optional, upload does this automatically)
-just validate-appstore
-
-# 3. Upload to App Store Connect
-just upload-appstore
-```
+1. Open the archive: `open build/v0.0.6-appstore/CacheStatus.xcarchive`
+2. In Xcode Organizer: Click **Distribute App** → **App Store Connect**
+3. Follow the prompts to upload
+4. Submit for review in App Store Connect
 
 ### Output
 
 ```
 build/
 └── v0.0.6-appstore/
-    ├── CacheStatus.xcarchive       # Xcode archive
-    ├── ExportOptions.plist         # Export configuration
-    └── export/
-        └── CF Cache Status.pkg     # App Store package
+    └── CacheStatus.xcarchive       # Xcode archive
 ```
-
-### App Store Connect API (Optional)
-
-For automated uploads, you can use API keys instead of Apple ID:
-
-| Variable                  | Description                          |
-| ------------------------- | ------------------------------------ |
-| `APPSTORE_API_KEY_ID`     | Key ID from App Store Connect        |
-| `APPSTORE_API_ISSUER_ID`  | Issuer ID from App Store Connect     |
-| `APPSTORE_API_KEY_PATH`   | Path to `.p8` private key file       |
-
-Generate keys at: App Store Connect → Users and Access → Keys
 
 ### App Store Connect Setup
 
@@ -240,12 +219,13 @@ Common issues:
 - Hardened runtime not enabled
 - Unsigned frameworks/binaries
 
-### App Store Validation Failed
+### App Store Upload Failed
 
-The upload script validates before uploading. Common issues:
+Common issues when uploading via Xcode Organizer:
 - Missing provisioning profile
 - Bundle ID mismatch
 - Version/build number conflicts
+- manifest.json description > 112 characters (Safari extensions)
 
 ### Certificate Issues
 
@@ -265,11 +245,12 @@ Before releasing a new version:
 2. [ ] Create git tag: `git tag v0.0.X`
 3. [ ] Push tag: `git push origin v0.0.X`
 4. [ ] Build releases:
-   - [ ] `just release v0.0.X` (direct)
+   - [ ] `just release v0.0.X` (direct distribution)
    - [ ] `just dmg v0.0.X` (optional DMG installer)
-   - [ ] `just release-appstore v0.0.X` (App Store)
-5. [ ] Create GitHub release with `.zip` (and optionally `.dmg`)
-6. [ ] Submit App Store version in App Store Connect
+   - [ ] `just release-appstore v0.0.X` (App Store archive)
+5. [ ] Create GitHub release with `.zip` and `.dmg`
+6. [ ] Upload App Store build via Xcode Organizer
+7. [ ] Submit for review in App Store Connect
 
 > **Note:** Version and build number are automatically set from the git tag.
 > `v0.0.8` → MARKETING_VERSION=0.0.8, BUILD=(commit count)

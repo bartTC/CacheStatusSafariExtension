@@ -50,6 +50,26 @@ just dmg                   # Create DMG installer
 gh release create v0.0.X   # Create GitHub release with assets
 ```
 
+### GitHub Release Notes Format
+
+```
+One paragraph summary of the release.
+
+## Added
+- New features
+
+## Changed
+- Changes to existing functionality
+
+## Fixed
+- Bug fixes
+```
+
+- Summary paragraph first (no header)
+- Sections use `##` (h2) headers
+- Section order: Added → Changed → Fixed
+- Omit empty sections
+
 ### App Store
 
 ```bash

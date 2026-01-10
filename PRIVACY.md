@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Cache Status** does not collect, store, or transmit any personal data.
+Cache Status does not collect, store, or transmit any personal data.
 
 ## What the extension does
 
@@ -19,13 +19,13 @@ All processing happens locally in your browser. When you close a tab, that tab's
 
 ## Permissions explained
 
-| Permission | Why it's needed |
-|------------|-----------------|
-| `webRequest` | Read HTTP response headers |
-| `webNavigation` | Detect page loads |
-| `activeTab` | Access current tab info |
-| `<all_urls>` | Work on any website |
+Safari requires extensions to explicitly declare which capabilities they need to access. Because this extension monitors network traffic to detect cache headers, it must request the following permissions in its manifest file.
 
-## Contact
+## Permissions explained
 
-Questions? Open an issue on [GitHub](https://github.com/bartTC/CacheStatusSafariExtension).
+| Permission      | Why it's needed            |
+| --------------- | -------------------------- |
+| `webRequest`    | Read HTTP response headers |
+| `webNavigation` | Detect page loads          |
+| `activeTab`     | Access current tab info    |
+| `<all_urls>`    | Work on any website        |

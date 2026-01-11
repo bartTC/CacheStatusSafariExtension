@@ -154,7 +154,9 @@ function showPendingIcon(tabId) {
 function notifyPopup(tabId) {
   const port = popupPorts.get(tabId);
   if (port) {
-    port.postMessage({ type: 'update', data: tabData.get(tabId) || null });
+    const data = tabData.get(tabId) || null;
+    console.log('[CF Cache Status] notifyPopup tabId:', tabId, 'hasData:', !!data);
+    port.postMessage({ type: 'update', data });
   }
 }
 
@@ -166,6 +168,7 @@ function notifyPopup(tabId) {
 
 browser.webNavigation.onBeforeNavigate.addListener((details) => {
   if (details.frameId === 0) {
+    console.log('[CF Cache Status] onBeforeNavigate tabId:', details.tabId, 'url:', details.url);
     tabData.delete(details.tabId);
     clearBadge(details.tabId);
     notifyPopup(details.tabId);
@@ -181,11 +184,14 @@ browser.webNavigation.onBeforeNavigate.addListener((details) => {
 
 browser.webNavigation.onCompleted.addListener((details) => {
   if (details.frameId === 0) {
+    console.log('[CF Cache Status] onCompleted tabId:', details.tabId, 'url:', details.url);
     const data = tabData.get(details.tabId);
     const pending = pendingNavigations.get(details.tabId);
 
     // Check if we never received headers (Safari limitation with external links/bookmarks)
     if (pending && !pending.headersReceived) {
+      console.log('[CF Cache Status] No headers received (Safari limitation)');
+
       const existingData = tabData.get(details.tabId);
       if (existingData) {
         existingData.noHeaders = true;
@@ -223,6 +229,8 @@ browser.webNavigation.onCompleted.addListener((details) => {
  * Called by both onHeadersReceived and onResponseStarted (Safari fallback).
  */
 function processMainFrameHeaders(details) {
+  console.log('[CF Cache Status] processMainFrameHeaders tabId:', details.tabId, 'url:', details.url);
+
   // Mark navigation as having received headers (for Safari limitation detection)
   const pendingNav = pendingNavigations.get(details.tabId);
   if (pendingNav) {
@@ -241,6 +249,7 @@ function processMainFrameHeaders(details) {
   // Detect CDN and parse status
   const cdn = detectCDN(headers);
   const status = parseCacheStatus(headers, cdn);
+  console.log('[CF Cache Status] Detected cdn:', cdn, 'status:', status, 'headers:', Object.keys(headers).join(', '));
 
   // Store data
   tabData.set(details.tabId, {
@@ -258,6 +267,7 @@ function processMainFrameHeaders(details) {
 browser.webRequest.onHeadersReceived.addListener(
   (details) => {
     if (details.type === 'main_frame' && details.frameId === 0) {
+      console.log('[CF Cache Status] onHeadersReceived tabId:', details.tabId);
       processMainFrameHeaders(details);
     }
   },
@@ -274,6 +284,7 @@ browser.webRequest.onResponseStarted.addListener(
 
     const pendingNav = pendingNavigations.get(details.tabId);
     if (pendingNav && !pendingNav.headersReceived) {
+      console.log('[CF Cache Status] onResponseStarted fallback tabId:', details.tabId);
       processMainFrameHeaders(details);
     }
   },
@@ -284,6 +295,7 @@ browser.webRequest.onResponseStarted.addListener(
 // --- Tab Events ---
 
 browser.tabs.onRemoved.addListener((tabId) => {
+  console.log('[CF Cache Status] onRemoved tabId:', tabId);
   tabData.delete(tabId);
   popupPorts.delete(tabId);
   pendingNavigations.delete(tabId);
@@ -291,6 +303,7 @@ browser.tabs.onRemoved.addListener((tabId) => {
 
 browser.tabs.onActivated.addListener((activeInfo) => {
   const data = tabData.get(activeInfo.tabId);
+  console.log('[CF Cache Status] onActivated tabId:', activeInfo.tabId, 'hasData:', !!data, 'status:', data?.status);
   if (data) {
     if (data.noHeaders) {
       showPendingIcon(activeInfo.tabId);
@@ -350,6 +363,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.type === 'performanceData' && sender.tab) {
+    console.log('[CF Cache Status] performanceData received tabId:', sender.tab.id, 'ttfb:', message.metrics?.ttfb);
     const existing = tabData.get(sender.tab.id);
     if (existing) {
       existing.performance = message.metrics;
@@ -372,16 +386,19 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // --- Popup Port Connection ---
 
 browser.runtime.onConnect.addListener((port) => {
+  console.log('[CF Cache Status] onConnect port:', port.name);
   if (port.name !== 'popup') return;
 
   port.onMessage.addListener((msg) => {
     if (msg.type === 'subscribe' && msg.tabId) {
+      console.log('[CF Cache Status] Popup subscribed to tabId:', msg.tabId);
       popupPorts.set(msg.tabId, port);
       port.postMessage({ type: 'update', data: tabData.get(msg.tabId) || null });
     }
   });
 
   port.onDisconnect.addListener(() => {
+    console.log('[CF Cache Status] Popup disconnected');
     for (const [tabId, p] of popupPorts) {
       if (p === port) {
         popupPorts.delete(tabId);

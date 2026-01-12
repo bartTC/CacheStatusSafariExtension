@@ -107,3 +107,11 @@ dmg version="":
 # Build and sign for App Store, then upload manually via Xcode Organizer
 release-appstore tag="":
     ./scripts/archive-appstore.sh {{tag}}
+
+# =============================================================================
+# Maintenance
+# =============================================================================
+
+# Remove duplicate extensions from Safari (cleans Launch Services)
+cleanup-extensions:
+    ./scripts/cleanup-extensions.sh
